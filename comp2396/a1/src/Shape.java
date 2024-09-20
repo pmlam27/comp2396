@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.lang.Math;
+import java.util.Arrays;
 
 public class Shape {
     Color color;
@@ -25,13 +26,14 @@ public class Shape {
     int[] getX() {
         int xAmount = xLocal.length;
         int[] xCanvas = new int[xAmount];
+
         for(int i=0; i<xAmount; i++) {
             // compute x*cos(theta) and y*sin(theta)
             double xCosTheta = xLocal[i] * Math.cos(theta);
             double ySinTheta = yLocal[i] * Math.sin(theta);
 
             // it is assumed that the x coordinate is within -2^16 < x < 2^16 (size of int)
-            xCanvas[i] = (int) Math.round(xCosTheta + ySinTheta + xc);
+            xCanvas[i] = (int) Math.round(xCosTheta - ySinTheta + xc);
         }
         return xCanvas;
     }

@@ -10,7 +10,7 @@ public class Triangle extends Shape {
         double yRightVertex = 0;
         double xUpperLeftVertex = -d * COS_PI_OVER_3;
         double yUpperLeftVertex = -d * SIN_PI_OVER_3;
-        double xBottomLeftVertex = -d * SIN_PI_OVER_3;
+        double xBottomLeftVertex = -d * COS_PI_OVER_3;
         double yBottomLeftVertex = d * SIN_PI_OVER_3;
 
         xLocal = new double[] {xRightVertex, xBottomLeftVertex, xUpperLeftVertex};

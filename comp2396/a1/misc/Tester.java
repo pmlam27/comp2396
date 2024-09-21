@@ -44,7 +44,9 @@ public class Tester {
         System.out.print("\n---triangle test---\n");
         Triangle testTriangle = this.createTriangle();
         System.out.print(this.ShapePointsToString(testTriangle));
-
+        
+        System.out.println(testTriangle.xc);
+        System.out.println(testTriangle.yc);
         return "triangle test: placeholder\n";
     }
 

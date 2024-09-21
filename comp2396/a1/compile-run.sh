@@ -2,4 +2,13 @@
 
 javac ./src/*.java -d ./target
 cd target || exit
-java Square_GUI_Test
+
+
+if [ $# -eq 0 ]
+  then
+    echo "No arguments supplied"
+    exit 1
+fi
+
+java $1
+

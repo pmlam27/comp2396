@@ -28,7 +28,6 @@ public class ShapeTester extends MasterTester {
 
     /**
      * test everything that should be tested.
-     * the setVertices method is not tested because it will be overridden in subclasses.
      * @return a string that should be printed to indicate whether the tests are successful or not.
      */
     @Override

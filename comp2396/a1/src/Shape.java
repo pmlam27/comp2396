@@ -39,6 +39,10 @@ public class Shape {
         theta += dt;
     }
 
+    /**
+     * get the x coordinates of all vertices of the shape.
+     * @return an array of double representing the x coordinate
+     */
     int[] getX() {
         int xAmount = xLocal.length;
         int[] xCanvas = new int[xAmount];
@@ -54,6 +58,10 @@ public class Shape {
         return xCanvas;
     }
 
+    /**
+     * get the y coordinates of all vertices of the shape.
+     * @return an array of double representing the y coordinate
+     */
     int[] getY() {
         int yAmount = yLocal.length;
         int[] yCanvas = new int[yAmount];

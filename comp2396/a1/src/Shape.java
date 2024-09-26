@@ -15,16 +15,16 @@ public class Shape {
     double[] yLocal; // y coordinates of all the vertices, relative to the shape center
 
     /**
-     * set the vertices of the shape, should be overridden in subclasses.
-     * @param d what this value means depends on the implementation. please refer to the subclasses for details.
+     * Set the vertices of the shape, should be overridden in subclasses.
+     * @param d this value roughly defines the size of the shape. Exact implementation will differ in each subclass.
      */
     void setVertices(double d) {
     }
 
     /**
-     * translates the shape center.
-     * @param dx translation in the x axis
-     * @param dy translation in the y axis
+     * Translates the center of the shape based on the provided values.
+     * @param dx translation in the x-axis
+     * @param dy translation in the y-axis
      */
     void translate(double dx, double dy) {
         xc += dx;
@@ -32,7 +32,7 @@ public class Shape {
     }
 
     /**
-     * rotates the shape.
+     * Rotates the shape based on the provided rotation angle.
      * @param dt the amount of rotation to the shape (in radian)
      */
     void rotate(double dt) {
@@ -40,39 +40,58 @@ public class Shape {
     }
 
     /**
-     * get the x coordinates of all vertices of the shape.
-     * @return an array of double representing the x coordinate
+     * This method translate the x coordinates from local to canvas coordinate, and then return it.
+     * @return an array of integer representing the x coordinate relative to the canvas.
      */
     int[] getX() {
-        int xAmount = xLocal.length;
-        int[] xCanvas = new int[xAmount];
 
-        for(int i=0; i<xAmount; i++) {
-            // compute x*cos(theta) and y*sin(theta)
+        // Get the number of vertices that the shape has. Assumes that each vertex have exactly one x coordinate.
+        int verticesAmount = xLocal.length;
+
+        // Create an integer array to store the translation result.
+        int[] xRelativeToCanvas = new int[verticesAmount];
+
+        // For each vertex, translate the vertex and store it in the xRelativeToCanvas array.
+        for(int i=0; i<verticesAmount; i++) {
+
+            // Compute x*cos(theta) and y*sin(theta) for later use
             double xCosTheta = xLocal[i] * Math.cos(theta);
             double ySinTheta = yLocal[i] * Math.sin(theta);
 
-            // it is assumed that the x coordinate is within -2^16 < x < 2^16 (size of int)
-            xCanvas[i] = (int) Math.round(xCosTheta - ySinTheta + xc);
+            // Compute the x coordinates relative to canvas and store it.
+            // It is assumed that the x coordinate is within -2^16 < x < 2^16 (size of int)
+            xRelativeToCanvas[i] = (int) Math.round(xCosTheta - ySinTheta + xc);
         }
-        return xCanvas;
+
+        // Returns the array.
+        return xRelativeToCanvas;
     }
 
     /**
-     * get the y coordinates of all vertices of the shape.
-     * @return an array of double representing the y coordinate
+     * This method translate the y coordinates from local to canvas coordinate, and then return it.
+     * @return an array of integer representing the y coordinate relative to the canvas.
      */
     int[] getY() {
-        int yAmount = yLocal.length;
-        int[] yCanvas = new int[yAmount];
-        for(int i=0; i<yAmount; i++) {
-            // compute x*sin(theta) and y*cos(theta)
+
+        // Get the number of vertices that the shape has. Assumes that each vertex have exactly one x coordinate.
+        int verticesAmount = yLocal.length;
+
+        // Create an integer array to store the translation result.
+        int[] yRelativeToCanvas = new int[verticesAmount];
+
+        // For each vertex, translate the vertex and store it in the yRelativeToCanvas array.
+        for(int i=0; i<verticesAmount; i++) {
+            // compute x*sin(theta) and y*cos(theta) for later use
             double xSinTheta = xLocal[i] * Math.sin(theta);
             double yCosTheta = yLocal[i] * Math.cos(theta);
 
-            yCanvas[i] = (int) Math.round(xSinTheta + yCosTheta + yc);
+            // Compute the y coordinates relative to canvas and store it.
+            // It is assumed that the y coordinate is within -2^16 < x < 2^16 (size of int)
+            yRelativeToCanvas[i] = (int) Math.round(xSinTheta + yCosTheta + yc);
         }
-        return yCanvas;
+
+        // Returns the array.
+        return yRelativeToCanvas;
     }
  }
 

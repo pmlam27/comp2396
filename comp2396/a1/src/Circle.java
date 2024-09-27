@@ -5,7 +5,7 @@
 public class Circle extends Shape {
     /**
      * set the vertices for the circle's bounding box.
-     * @param d defines the side length of the circle's bounding box.
+     * @param d the side length of the circle's bounding box will be 2*d.
      */
     @Override
     void setVertices(double d) {

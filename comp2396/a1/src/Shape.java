@@ -6,16 +6,38 @@ import java.util.Arrays;
  * This class is the base class, and it will be inherited by different Shape class implementation.
  */
 public class Shape {
-    Color color; // color of the shape
-    boolean filled; // whether the shape is filled with color
-    double theta; // the angle of the shape
-    double xc; // x coordinate of the shape center
-    double yc; // y coordinate of the shape center
-    double[] xLocal; // x coordinates of all the vertices, relative to the shape center
-    double[] yLocal; // y coordinates of all the vertices, relative to the shape center
+    /**
+     * color of the shape
+     */
+    public Color color;
+    /**
+     * whether the shape is filled with color
+     */
+    public boolean filled;
+    /**
+     * the rotation of the shape
+     */
+    public double theta;
+    /**
+     * x coordinate of the shape center
+     */
+    public double xc;
+    /**
+     * y coordinate of the shape center
+     */
+    public double yc;
+    /**
+     * x coordinates of all the vertices, relative to the shape center
+     */
+    public double[] xLocal;
+    /**
+     * y coordinates of all the vertices, relative to the shape center
+     */
+    public double[] yLocal;
 
     /**
-     * Set the vertices of the shape, should be overridden in subclasses.
+     * this method will not do anything in the Shape class.
+     * It should be overridden in subclasses, in which this method will set the vertices of the shape.
      * @param d this value roughly defines the size of the shape. Exact implementation will differ in each subclass.
      */
     void setVertices(double d) {
@@ -59,7 +81,7 @@ public class Shape {
             double ySinTheta = yLocal[i] * Math.sin(theta);
 
             // Compute the x coordinates relative to canvas and store it.
-            // It is assumed that the x coordinate is within -2^16 < x < 2^16 (size of int)
+            // It is assumed that the x coordinate is within -2^16 < x < 2^16-1 (size of int)
             xRelativeToCanvas[i] = (int) Math.round(xCosTheta - ySinTheta + xc);
         }
 
@@ -73,7 +95,7 @@ public class Shape {
      */
     int[] getY() {
 
-        // Get the number of vertices that the shape has. Assumes that each vertex have exactly one x coordinate.
+        // Get the number of vertices that the shape has. Assumes that each vertex have exactly one y coordinate.
         int verticesAmount = yLocal.length;
 
         // Create an integer array to store the translation result.
@@ -86,7 +108,7 @@ public class Shape {
             double yCosTheta = yLocal[i] * Math.cos(theta);
 
             // Compute the y coordinates relative to canvas and store it.
-            // It is assumed that the y coordinate is within -2^16 < x < 2^16 (size of int)
+            // It is assumed that the y coordinate is within -2^16 < x < 2^16-1 (size of int)
             yRelativeToCanvas[i] = (int) Math.round(xSinTheta + yCosTheta + yc);
         }
 

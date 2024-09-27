@@ -1,63 +1,71 @@
-import java.awt.Color;
 import java.util.Arrays;
 
+/**
+ * This class checks the correctness of the Square class.
+ */
 public class SquareTester extends ShapeTester {
 
+    /**
+     * The main function of this class will test all the fields and methods of the Square class.
+     * @param args not used in this application.
+     */
     public static void main(String[] args) {
         SquareTester tester = new SquareTester();
         tester.testAllFields(new Square());
+        tester.testSetVertices();
         tester.testTranslate(new Square());
         tester.testRotate(new Square());
+        tester.testGetX();
+        tester.testGetY();
     }
 
     /**
-     * test the set vertices method
-     * @return
+     * check if calling setVertices would set the xLocal and yLocal values correctly.
      */
-    boolean testSetVertices(Square square) {
-
-        System.out.println("square test set vertices called");
-        Shape testSquare = initializeShapeWithDefault(square);
+    @Override
+    void testSetVertices() {
+        Shape testSquare = initializeShapeWithDefault(new Square());
         testSquare.setVertices(5.0);
-        double[] supposedXLocalValue = new double[] {5.0, 5.0, -5.0, -5.0};
-        double[] supposedYLocalValue = new double[] {5.0, -5.0, -5.0, 5.0};
+        double[] correctXLocalValue = new double[] {5.0, 5.0, -5.0, -5.0};
+        double[] correctYLocalValue = new double[] {5.0, -5.0, -5.0, 5.0};
 
-        return  Arrays.equals(supposedXLocalValue, testSquare.xLocal) &&
-                Arrays.equals(supposedYLocalValue, testSquare.yLocal);
+        // the test is successful if setVertices can set xLocal and yLocal to the correct value.
+        boolean testSuccess =   Arrays.equals(correctXLocalValue, testSquare.xLocal) &&
+                                Arrays.equals(correctYLocalValue, testSquare.yLocal);
+
+        System.out.println("[Square] test setVertices method: " + (testSuccess ? "success" : "failed"));
     }
 
-    boolean testGetX(Square square) {
+    /**
+     * check if getX can get the correct x values relative to the canvas.
+     */
+    @Override
+    void testGetX() {
         double[] defaultXLocal = {10.0, 10.0, -10.0, -10.0};
         double[] defaultYLocal = {10.0, -10.0, -10.0, 10.0};
-        Shape testSquare = initializeShapeWithDefault(square, defaultXLocal, defaultYLocal);
-
-        int[] supposedXValues = new int[] {20, 20, 0, 0};
+        Shape testSquare = initializeShapeWithDefault(new Square(), defaultXLocal, defaultYLocal);
+        int[] correctXValues = new int[] {20, 20, 0, 0};
         int[] getXResult = testSquare.getX();
-        return Arrays.equals(supposedXValues, getXResult);
+
+        // the test is successful if the result of getX is the correct value.
+        boolean testSuccess = Arrays.equals(correctXValues, getXResult);
+        System.out.println("[Square] test getX method: " + (testSuccess ? "success" : "failed"));
     }
 
-    boolean testGetY(Square square) {
+    /**
+     * check if getY can get the correct y values relative to the canvas.
+     */
+    @Override
+    void testGetY() {
         double[] defaultXLocal = {10.0, 10.0, -10.0, -10.0};
         double[] defaultYLocal = {10.0, -10.0, -10.0, 10.0};
-        Shape testSquare = initializeShapeWithDefault(square, defaultXLocal, defaultYLocal);
+        Shape testSquare = initializeShapeWithDefault(new Square(), defaultXLocal, defaultYLocal);
 
-        int[] supposedYValues = new int[] {20, 20, 0, 0};
+        int[] correctYValues = new int[] {20, 0, 0, 20};
         int[] getYResult = testSquare.getY();
-        return Arrays.equals(supposedYValues, getYResult);
-    }
 
-//    /**
-//     * test everything and return a message
-//     * @return a string that should be printed to indicate whether the tests are successful or not.
-//     */
-//    String testAllAndGetMessage() {
-//
-//        return  "\n---Square Test---\n" + // message heading
-//                (testAllFields(new Square()) ? "all fields test: passed" : "all fields test: failed") + "\n" +
-//                (testSetVertices(new Square()) ? "setVertices test: passed" : "setVertices test: failed") + "\n" +
-//                (testTranslate(new Square()) ? "translation test: passed" : "translation test: failed") + "\n" +
-//                (testRotate(new Square()) ? "rotate test: passed" : "rotate test: failed") + "\n" +
-//                (testGetX(new Square()) ? "getX test: passed" : "getX test: failed") + "\n" +
-//                (testGetY(new Square()) ? "getY test: passed" : "getY test: failed") + "\n";
-//    }
+        // the test is successful if the result of getY is the correct value.
+        boolean testSuccess = Arrays.equals(correctYValues, getYResult);
+        System.out.println("[Square] test getY method: " + (testSuccess ? "success" : "failed"));
+    }
 }

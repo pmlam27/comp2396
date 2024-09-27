@@ -5,7 +5,7 @@
 public class Circle extends Shape {
     /**
      * set the vertices for the circle's bounding box.
-     * @param d the side length of the circle's bounding box will be 2*d.
+     * @param d d is 1/2 of the side length of the bounding box.
      */
     @Override
     void setVertices(double d) {
@@ -21,8 +21,8 @@ public class Circle extends Shape {
      */
     @Override
     int[] getX() {
-
         // Compute the x coordinate of the vertices relative to the canvas.
+        // It is assumed that the x coordinate is within -2^16 < x < 2^16-1 (size of int)
         int xUpperLeftCanvas = (int) Math.round(xLocal[0] + xc);
         int xLowerRightCanvas = (int) Math.round(xLocal[1] + xc);
 
@@ -36,12 +36,12 @@ public class Circle extends Shape {
      */
     @Override
     int[] getY() {
-
         // Compute the y coordinate of the vertices relative to the canvas.
-        int yUpperLeft = (int) Math.round(yLocal[0] + yc);
-        int yLowerRight = (int) Math.round(yLocal[1] + yc);
+        // It is assumed that the y coordinate is within -2^16 < x < 2^16-1 (size of int)
+        int yUpperLeftCanvas = (int) Math.round(yLocal[0] + yc);
+        int yLowerRightCanvas = (int) Math.round(yLocal[1] + yc);
 
         // Returns the y coordinate relative to the canvas.
-        return new int[] {yUpperLeft, yLowerRight};
+        return new int[] {yUpperLeftCanvas, yLowerRightCanvas};
     }
 }

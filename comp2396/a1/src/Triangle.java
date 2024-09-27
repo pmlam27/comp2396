@@ -5,8 +5,14 @@ import java.lang.Math;
  * It represents a triangle shape.
  */
 public class Triangle extends Shape {
-    private static final double SIN_PI_OVER_3 = Math.sin(Math.PI / 3); // a const to represent sin(pi/3)
-    private static final double COS_PI_OVER_3 = Math.cos(Math.PI / 3); // a const to represent cos(pi/3)
+    /**
+     * a const to represent sin(pi/3)
+     */
+    public static final double SIN_PI_OVER_3 = Math.sin(Math.PI / 3);
+    /**
+     *  a const to represent cos(pi/3)
+     */
+    public static final double COS_PI_OVER_3 = Math.cos(Math.PI / 3);
 
     /**
      * Set the triangle vertices.

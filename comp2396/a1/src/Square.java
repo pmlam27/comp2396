@@ -5,7 +5,7 @@
 public class Square extends Shape {
     /**
      * Set the vertices of the shape.
-     * @param d is 1/2 of the side length of the Square.
+     * @param d d is 1/2 of the side length of the Square.
      */
     @Override
     void setVertices(double d) {

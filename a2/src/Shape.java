@@ -57,20 +57,21 @@ public class Shape {
         this.yc = yc;
     }
 
-    public void setxLocal(double[] xLocal) {
+    public void setXLocal(double[] xLocal) {
         this.xLocal = xLocal;
     }
 
-    public void setyLocal(double[] yLocal) {
+    public void setYLocal(double[] yLocal) {
         this.yLocal = yLocal;
     }
 
     public void translate(double dx, double dy) {
-
+        this.xc += dx;
+        this.yc += dy;
     }
 
-    public void rotate(double[] dt) {
-
+    public void rotate(double dt) {
+        this.theta += dt;
     }
 
     public int[] getX() {

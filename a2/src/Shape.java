@@ -74,10 +74,12 @@ public class Shape {
         this.theta += dt;
     }
 
+    // TODO: implement this
     public int[] getX() {
         return new int[] {};
     }
 
+    // TODO: implement this
     public int[] getY() {
         return new int[] {};
     }

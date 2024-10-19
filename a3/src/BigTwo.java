@@ -51,9 +51,20 @@ public class BigTwo implements CardGame {
 
         playerList.forEach(CardGamePlayer::removeAllCards);
 
+        int playerIdWithThreeDiamond = -1;
+
         for (int i = 0; i < 52; i++) {
-            int currentId = Math.floorDiv(i, 13);
+            int playerId = Math.floorDiv(i, 13);
+            CardGamePlayer currentPlayer = playerList.get(playerId);
+            Card cardToAdd = deck.getCard(i);
+
+            if (cardToAdd.getRank() == 12 && cardToAdd.getSuit() == 3) {
+                playerIdWithThreeDiamond = playerId;
+            }
+            currentPlayer.addCard(deck.getCard(i));
         }
+
+        currentPlayerIdx = playerIdWithThreeDiamond;
 
         // TODO: distribute cards
 

@@ -1,14 +1,15 @@
 public abstract class Hand extends CardList {
 
     private CardGamePlayer player;
+    private CardList cards;
 
     public Hand(CardGamePlayer player, CardList cards) {
-        // TODO: stuff
+        this.player = player;
+        this.cards = cards;
     }
 
     public CardGamePlayer getPlayer() {
-        // TODO: stuff
-        return new CardGamePlayer();
+        return player;
     }
 
     public Card getTopCard() {

@@ -10,41 +10,53 @@ public class BigTwo implements CardGame {
     // private BigTwoUI ui;
 
     public BigTwo() {
-        // TODO: constructor
+        numOfPlayers = 4;
+        ArrayList<CardGamePlayer> players = new ArrayList<CardGamePlayer>();
+        players.add(new CardGamePlayer());
+        players.add(new CardGamePlayer());
+        players.add(new CardGamePlayer());
+        players.add(new CardGamePlayer());
+
+        // TODO: create BigTwoUI
     }
 
     @Override
     public int getNumOfPlayers() {
-        // TODO: stuff
-        return 0;
+        return numOfPlayers;
     }
 
     @Override
     public Deck getDeck() {
-        // TODO: stuff
-        return null;
+        return deck;
     }
 
     @Override
     public ArrayList<CardGamePlayer> getPlayerList() {
-        // TODO: stuff
-        return null;
+        return playerList;
     }
 
     @Override
     public ArrayList<Hand> getHandsOnTable() {
-        // TODO: stuff
-        return null;
+        return handsOnTable;
     }
 
     @Override
     public int getCurrentPlayerIdx() {
-        // TODO: stuff
-        return 0;
+        return currentPlayerIdx;
     }
 
     @Override
     public void start(Deck deck) {
+        this.deck = deck;
+
+        playerList.forEach(CardGamePlayer::removeAllCards);
+
+        for (int i = 0; i < 52; i++) {
+            int currentId = Math.floorDiv(i, 13);
+        }
+
+        // TODO: distribute cards
+
         // TODO: stuff
     }
 

@@ -7,7 +7,7 @@ public class BigTwo implements CardGame {
     private ArrayList<CardGamePlayer> playerList;
     private ArrayList<Hand> handsOnTable;
     private int currentPlayerIdx;
-    // private BigTwoUI ui;
+    private BigTwoUI ui;
 
     public BigTwo() {
         numOfPlayers = 4;
@@ -17,7 +17,7 @@ public class BigTwo implements CardGame {
         players.add(new CardGamePlayer());
         players.add(new CardGamePlayer());
 
-        // TODO: create BigTwoUI
+        ui = new BigTwoUI(this);
     }
 
     @Override
@@ -48,6 +48,7 @@ public class BigTwo implements CardGame {
     @Override
     public void start(Deck deck) {
         this.deck = deck;
+        handsOnTable.clear();
 
         playerList.forEach(CardGamePlayer::removeAllCards);
 
@@ -65,10 +66,10 @@ public class BigTwo implements CardGame {
         }
 
         currentPlayerIdx = playerIdWithThreeDiamond;
+        ui.setActivePlayer(playerIdWithThreeDiamond);
 
-        // TODO: distribute cards
-
-        // TODO: stuff
+        ui.repaint();
+        ui.promptActivePlayer();
     }
 
     @Override

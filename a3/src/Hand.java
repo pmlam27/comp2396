@@ -1,11 +1,17 @@
+import java.util.ArrayList;
+import java.util.Collection;
+
 public abstract class Hand extends CardList {
 
-    private CardGamePlayer player;
-    private CardList cards;
+    private final CardGamePlayer player;
+    protected final HandAttribute handAttribute;
 
     public Hand(CardGamePlayer player, CardList cards) {
         this.player = player;
-        this.cards = cards;
+        for(int i=0; i<cards.size(); i++) {
+            this.addCard(cards.getCard(i));
+        }
+        this.handAttribute = identifyHand(this);
     }
 
     public CardGamePlayer getPlayer() {
@@ -13,15 +19,153 @@ public abstract class Hand extends CardList {
     }
 
     public Card getTopCard() {
-        // TODO: stuff
-        return new Card(1, 1);
+        return this.getCard(this.size()-1);
     }
 
     public boolean beats(Hand hand) {
-        // TODO: stuff
         return false;
     }
 
     public abstract boolean isValid();
     public abstract String getType();
+
+
+
+    protected HandAttribute identifyHand(Hand hand) {
+        HandAttribute attributeToReturn = new HandAttribute(null, HandCombination.IMPERMISSIBLE);
+        if(hand.size() == 1) {
+            Card topCard = hand.getCard(0);
+            attributeToReturn = new HandAttribute(topCard, HandCombination.SINGLE);
+        }
+        if(hand.size() == 2 && hand.allHaveSameRank()) {
+            Card topCard = hand.highestSuit();
+            attributeToReturn = new HandAttribute(topCard, HandCombination.PAIR);
+        }
+        if(hand.size() == 3 && hand.allHaveSameRank()) {
+            Card topCard = hand.highestSuit();
+            attributeToReturn = new HandAttribute(topCard, HandCombination.TRIPLE);
+        }
+        if(hand.size() == 5) {
+            if(hand.allHaveConsecutiveRank()) {
+                Card topCard = hand.highestRank();
+                if(hand.allHaveSameSuit()) {
+                    attributeToReturn = new HandAttribute(topCard, HandCombination.STRAIGHT_FLUSH);
+                } else {
+                    attributeToReturn = new HandAttribute(topCard, HandCombination.STRAIGHT);
+                }
+            }
+            if(hand.allHaveSameSuit()) {
+                Card topCard = hand.highestRank();
+                attributeToReturn = new HandAttribute(topCard, HandCombination.FLUSH);
+            }
+            if(hand.have3SameAnd2Same()) {
+
+            }
+        }
+        return attributeToReturn;
+    }
+
+    protected boolean containRank(int rank) {
+        boolean rankMatch = false;
+        for(int i=0; i<this.size(); i++) {
+            if (this.getCard(i).getRank() == rank) {
+                rankMatch = true;
+            }
+        }
+        return rankMatch;
+    }
+
+    protected boolean have3SameAnd2Same() {
+        ArrayList<Integer> rankOfHand = new ArrayList<Integer>();
+        for(int i=0; i<5; i++) {
+            rankOfHand.add(this.getCard(i).getRank());
+        }
+        rankOfHand.sort(null);
+        boolean have3Same = false;
+        boolean have2Same = false;
+        int firstRank = rankOfHand.get(0);
+        int lastRank = rankOfHand.get(5);
+
+        int firstRankOccurrences = 1;
+        for(int i=1; i<5; i++) {
+            if(rankOfHand.get(i) == firstRank) {
+                firstRankOccurrences++;
+            }
+        }
+        if(firstRankOccurrences == 3) { have3Same = true; }
+        if(firstRankOccurrences == 2) { have2Same = true; }
+
+        int lastRankOccurrences = 1;
+        for(int i=1; i<5; i++) {
+            if(rankOfHand.get(i) == lastRank) {
+                lastRankOccurrences++;
+            }
+        }
+        if(lastRankOccurrences == 3) { have3Same = true; }
+        if(lastRankOccurrences == 2) { have2Same = true; }
+
+        return have2Same && have3Same;
+    }
+
+    protected boolean allHaveConsecutiveRank() {
+        boolean atLeast1Consecutive = false;
+        for(int i=0; i<this.size(); i++) {
+            int currentCardRank = this.getCard(i).getRank();
+            if (    this.containRank(currentCardRank+1) &&
+                    this.containRank(currentCardRank+2) &&
+                    this.containRank(currentCardRank+3) &&
+                    this.containRank(currentCardRank+4)
+            ) {
+                atLeast1Consecutive = true;
+            }
+        }
+        return atLeast1Consecutive;
+    }
+
+    protected boolean allHaveSameRank() {
+        boolean allIsSame = true;
+        int firstCardRank = this.getCard(0).getRank();
+        for(int i=0; i<this.size(); i++) {
+            int currentCardRank = this.getCard(i).getRank();
+            if(currentCardRank != firstCardRank) {
+                allIsSame = false;
+            }
+        }
+        return allIsSame;
+    }
+
+    protected boolean allHaveSameSuit() {
+        boolean allIsSame = true;
+        int firstCardSuit = this.getCard(0).getSuit();
+        for(int i=0; i<this.size(); i++) {
+            int currentCardSuit = this.getCard(i).getSuit();
+            if(currentCardSuit != firstCardSuit) {
+                allIsSame = false;
+            }
+        }
+        return allIsSame;
+    }
+
+    protected Card highestRank() {
+        Card highestCard = this.getCard(0);
+        for(int i=0; i<this.size(); i++) {
+            Card currentCard = this.getCard(i);
+            if(currentCard.getRank() > highestCard.getRank()) {
+                highestCard = currentCard;
+            }
+        }
+        return highestCard;
+    }
+
+    protected Card highestSuit() {
+        Card highestCard = this.getCard(0);
+        for(int i=0; i<this.size(); i++) {
+            Card currentCard = this.getCard(i);
+            if(currentCard.getSuit() > highestCard.getSuit()) {
+                highestCard = currentCard;
+            }
+        }
+        return highestCard;
+    }
+
 }

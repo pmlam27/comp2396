@@ -1,5 +1,7 @@
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 public abstract class Hand extends CardList {
 
@@ -43,6 +45,24 @@ public abstract class Hand extends CardList {
     public abstract boolean isValid();
     public abstract String getType();
 
+    protected ArrayList<CardList> groupCardsWithSameRank() {
+        ArrayList<CardList> returnArray = new ArrayList<CardList>();
+        HashSet<Integer> setOfRank = new HashSet<>();
+        for(int i=0; i<this.size(); i++) {
+            setOfRank.add(this.getCard(i).getRank());
+        }
+        setOfRank.forEach(currentRank -> {
+            CardList group = new CardList();
+            for(int i=0; i<this.size(); i++) {
+                if(this.getCard(i).getRank() == currentRank) {
+                    group.addCard(this.getCard(i));
+                }
+            }
+            returnArray.add(group);
+        });
+        return returnArray;
+    }
+
     protected boolean containRank(int rank) {
         boolean rankMatch = false;
         for(int i=0; i<this.size(); i++) {
@@ -51,38 +71,6 @@ public abstract class Hand extends CardList {
             }
         }
         return rankMatch;
-    }
-
-    protected boolean have3SameAnd2Same() {
-        ArrayList<Integer> rankOfHand = new ArrayList<Integer>();
-        for(int i=0; i<5; i++) {
-            rankOfHand.add(this.getCard(i).getRank());
-        }
-        rankOfHand.sort(null);
-        boolean have3Same = false;
-        boolean have2Same = false;
-        int firstRank = rankOfHand.get(0);
-        int lastRank = rankOfHand.get(5);
-
-        int firstRankOccurrences = 1;
-        for(int i=1; i<5; i++) {
-            if(rankOfHand.get(i) == firstRank) {
-                firstRankOccurrences++;
-            }
-        }
-        if(firstRankOccurrences == 3) { have3Same = true; }
-        if(firstRankOccurrences == 2) { have2Same = true; }
-
-        int lastRankOccurrences = 1;
-        for(int i=1; i<5; i++) {
-            if(rankOfHand.get(i) == lastRank) {
-                lastRankOccurrences++;
-            }
-        }
-        if(lastRankOccurrences == 3) { have3Same = true; }
-        if(lastRankOccurrences == 2) { have2Same = true; }
-
-        return have2Same && have3Same;
     }
 
     protected boolean allHaveConsecutiveRank() {

@@ -1,5 +1,3 @@
-import java.util.Objects;
-
 public class Single extends Hand {
     public Single(CardGamePlayer player, CardList cards) {
         super(player, cards);

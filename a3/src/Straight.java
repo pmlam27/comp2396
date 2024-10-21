@@ -4,11 +4,6 @@ public class Straight extends Hand {
     }
 
     @Override
-    public boolean beats(Hand hand) {
-        return super.beats(hand);
-    }
-
-    @Override
     public boolean isValid() {
         if (    this.size() == 5 &&
                 this.allHaveConsecutiveRank() &&

@@ -1,11 +1,8 @@
+import java.util.Objects;
+
 public class Single extends Hand {
     public Single(CardGamePlayer player, CardList cards) {
         super(player, cards);
-    }
-
-    @Override
-    public boolean beats(Hand hand) {
-        return super.beats(hand);
     }
 
     @Override

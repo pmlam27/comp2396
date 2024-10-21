@@ -4,6 +4,11 @@ public class Flush extends Hand {
         super(player, cards);
     }
 
+    /**
+     * need to override since it compare suit first, and then rank
+     * @param hand
+     * @return
+     */
     @Override
     public boolean beats(Hand hand) {
         boolean sizeIsSame = this.size() == hand.size();

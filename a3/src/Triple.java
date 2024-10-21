@@ -4,11 +4,6 @@ public class Triple extends Hand {
     }
 
     @Override
-    public boolean beats(Hand hand) {
-        return super.beats(hand);
-    }
-
-    @Override
     public boolean isValid() {
         if(this.size() == 3 && this.allHaveSameRank()) {
             this.topCard = this.highestSuit();

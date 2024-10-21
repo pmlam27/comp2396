@@ -21,8 +21,23 @@ public abstract class Hand extends CardList {
         return topCard;
     }
 
+    /**
+     * by default compare rank first, and then suit
+     * @param hand
+     * @return
+     */
     public boolean beats(Hand hand) {
-        return false;
+        if(this.size() == hand.size()) {
+            if (this.getTopCard().getRank() > hand.getTopCard().getRank()) {
+                return true;
+            } else if (this.getTopCard().getRank() == hand.getTopCard().getRank()) {
+                return this.getTopCard().getSuit() > hand.getTopCard().getSuit();
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public abstract boolean isValid();

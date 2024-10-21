@@ -4,11 +4,6 @@ public class Pair extends Hand {
     }
 
     @Override
-    public boolean beats(Hand hand) {
-        return super.beats(hand);
-    }
-
-    @Override
     public boolean isValid() {
         if(this.size() == 2 && this.allHaveSameRank()) {
             this.topCard = this.highestSuit();

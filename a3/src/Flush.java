@@ -14,17 +14,12 @@ public class Flush extends Hand {
 
     @Override
     public boolean isValid() {
-        boolean sizeIsValid = this.size() == 5;
-        boolean contentIsValid = true;
-
-        int suitOfFirstCard = this.getCard(0).getSuit();
-        for (int i=1; i<5; i++) {
-            int suitOfCurrentCard = this.getCard(i).getSuit();
-            if(suitOfCurrentCard != suitOfFirstCard) {
-                contentIsValid = false;
-            }
+        if(this.size() == 5 && this.allHaveSameSuit()) {
+            this.topCard = this.highestRank();
+            return true;
+        } else {
+            return false;
         }
-        return sizeIsValid && contentIsValid;
     }
 
     @Override

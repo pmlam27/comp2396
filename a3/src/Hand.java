@@ -4,14 +4,13 @@ import java.util.Collection;
 public abstract class Hand extends CardList {
 
     private final CardGamePlayer player;
-    protected final HandAttribute handAttribute;
+    protected Card topCard;
 
     public Hand(CardGamePlayer player, CardList cards) {
         this.player = player;
         for(int i=0; i<cards.size(); i++) {
             this.addCard(cards.getCard(i));
         }
-        this.handAttribute = identifyHand(this);
     }
 
     public CardGamePlayer getPlayer() {
@@ -19,7 +18,7 @@ public abstract class Hand extends CardList {
     }
 
     public Card getTopCard() {
-        return this.getCard(this.size()-1);
+        return topCard;
     }
 
     public boolean beats(Hand hand) {
@@ -28,42 +27,6 @@ public abstract class Hand extends CardList {
 
     public abstract boolean isValid();
     public abstract String getType();
-
-
-
-    protected HandAttribute identifyHand(Hand hand) {
-        HandAttribute attributeToReturn = new HandAttribute(null, HandCombination.IMPERMISSIBLE);
-        if(hand.size() == 1) {
-            Card topCard = hand.getCard(0);
-            attributeToReturn = new HandAttribute(topCard, HandCombination.SINGLE);
-        }
-        if(hand.size() == 2 && hand.allHaveSameRank()) {
-            Card topCard = hand.highestSuit();
-            attributeToReturn = new HandAttribute(topCard, HandCombination.PAIR);
-        }
-        if(hand.size() == 3 && hand.allHaveSameRank()) {
-            Card topCard = hand.highestSuit();
-            attributeToReturn = new HandAttribute(topCard, HandCombination.TRIPLE);
-        }
-        if(hand.size() == 5) {
-            if(hand.allHaveConsecutiveRank()) {
-                Card topCard = hand.highestRank();
-                if(hand.allHaveSameSuit()) {
-                    attributeToReturn = new HandAttribute(topCard, HandCombination.STRAIGHT_FLUSH);
-                } else {
-                    attributeToReturn = new HandAttribute(topCard, HandCombination.STRAIGHT);
-                }
-            }
-            if(hand.allHaveSameSuit()) {
-                Card topCard = hand.highestRank();
-                attributeToReturn = new HandAttribute(topCard, HandCombination.FLUSH);
-            }
-            if(hand.have3SameAnd2Same()) {
-
-            }
-        }
-        return attributeToReturn;
-    }
 
     protected boolean containRank(int rank) {
         boolean rankMatch = false;

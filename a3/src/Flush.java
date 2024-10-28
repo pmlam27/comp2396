@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Flush extends Hand {
 
     public Flush(CardGamePlayer player, CardList cards) {
@@ -11,10 +13,13 @@ public class Flush extends Hand {
      */
     @Override
     public boolean beats(Hand hand) {
-        boolean sizeIsSame = this.size() == hand.size();
-
-        // placeholder
-        return false;
+        if(Objects.equals(hand.getType(), STRAIGHT)) {
+            return true;
+        } else if(Objects.equals(hand.getType(), FLUSH)) {
+            return suitIsGreaterThan(this.getTopCard(), hand.getTopCard());
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -29,6 +34,6 @@ public class Flush extends Hand {
 
     @Override
     public String getType() {
-        return "Flush";
+        return Hand.FLUSH;
     }
 }

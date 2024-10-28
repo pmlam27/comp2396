@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Quad extends Hand {
     public Quad(CardGamePlayer player, CardList cards) {
         super(player, cards);
@@ -5,7 +7,16 @@ public class Quad extends Hand {
 
     @Override
     public boolean beats(Hand hand) {
-        return super.beats(hand);
+        if( Objects.equals(hand.getType(), STRAIGHT) ||
+            Objects.equals(hand.getType(), FLUSH) ||
+            Objects.equals(hand.getType(), FULL_HOUSE)
+        ) {
+            return true;
+        } else if(Objects.equals(hand.getType(), QUAD)) {
+            return rankIsGreaterThan(this.getTopCard(), hand.getTopCard());
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -15,6 +26,6 @@ public class Quad extends Hand {
 
     @Override
     public String getType() {
-        return "Quad";
+        return Hand.QUAD;
     }
 }

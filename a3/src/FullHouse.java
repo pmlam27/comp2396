@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class FullHouse extends Hand {
     public FullHouse(CardGamePlayer player, CardList cards) {
@@ -7,7 +8,15 @@ public class FullHouse extends Hand {
 
     @Override
     public boolean beats(Hand hand) {
-        return super.beats(hand);
+        if( Objects.equals(hand.getType(), STRAIGHT) ||
+            Objects.equals(hand.getType(), FLUSH)
+        ) {
+            return true;
+        } else if (Objects.equals(hand.getType(), FULL_HOUSE)) {
+            return rankIsGreaterThan(this.getTopCard(), hand.getTopCard());
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -16,14 +25,14 @@ public class FullHouse extends Hand {
             return false;
         }
 
-        ArrayList<CardList> listOfGroup = this.groupCardsWithSameRank();
-        if(listOfGroup.size() != 2) {
+        ArrayList<CardGroup> listOfGroups = this.groupCardsWithSameRank();
+        if(listOfGroups.size() != 2) {
             return false;
         }
-        CardList groupWith3Card = null;
-        CardList groupWith2Card = null;
+        CardGroup groupWith3Card = null;
+        CardGroup groupWith2Card = null;
 
-        for(CardList group : listOfGroup) {
+        for(CardGroup group : listOfGroups) {
             if(group.size() == 3) {
                 groupWith3Card = group;
             }
@@ -33,13 +42,15 @@ public class FullHouse extends Hand {
         }
 
         if(groupWith3Card != null && groupWith2Card != null) {
-            // TODO: assign top card
-            // TODO: return true or false
+            topCard = groupWith3Card.highestRank();
+            return true;
+        } else {
+            return false;
         }
     }
 
     @Override
     public String getType() {
-        return "FullHouse";
+        return Hand.FULL_HOUSE;
     }
 }

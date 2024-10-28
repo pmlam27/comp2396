@@ -1,6 +1,17 @@
+import java.util.Objects;
+
 public class Straight extends Hand {
     public Straight(CardGamePlayer player, CardList cards) {
         super(player, cards);
+    }
+
+    @Override
+    public boolean beats(Hand hand) {
+        if(Objects.equals(hand.getType(), Hand.STRAIGHT)) {
+            return rankIsGreaterThan(this.getTopCard(), hand.getTopCard());
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -18,6 +29,6 @@ public class Straight extends Hand {
 
     @Override
     public String getType() {
-        return "Straight";
+        return Hand.STRAIGHT;
     }
 }

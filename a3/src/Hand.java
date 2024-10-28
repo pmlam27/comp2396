@@ -3,7 +3,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-public abstract class Hand extends CardList {
+public abstract class Hand extends CardGroup {
+    // use constants to store string representation of types to ensure consistency
+    protected static final String SINGLE = "Single";
+    protected static final String PAIR = "Pair";
+    protected static final String TRIPLE = "Triple";
+    protected static final String STRAIGHT = "Straight";
+    protected static final String FLUSH = "Flush";
+    protected static final String FULL_HOUSE = "FullHouse";
+    protected static final String QUAD = "Quad";
+    protected static final String STRAIGHT_FLUSH = "StraightFlush";
 
     private final CardGamePlayer player;
     protected Card topCard;
@@ -30,13 +39,7 @@ public abstract class Hand extends CardList {
      */
     public boolean beats(Hand hand) {
         if(this.size() == hand.size()) {
-            if (this.getTopCard().getRank() > hand.getTopCard().getRank()) {
-                return true;
-            } else if (this.getTopCard().getRank() == hand.getTopCard().getRank()) {
-                return this.getTopCard().getSuit() > hand.getTopCard().getSuit();
-            } else {
-                return false;
-            }
+            return this.rankIsGreaterThan(this.getTopCard(), hand.getTopCard());
         } else {
             return false;
         }
@@ -44,94 +47,4 @@ public abstract class Hand extends CardList {
 
     public abstract boolean isValid();
     public abstract String getType();
-
-    protected ArrayList<CardList> groupCardsWithSameRank() {
-        ArrayList<CardList> returnArray = new ArrayList<CardList>();
-        HashSet<Integer> setOfRank = new HashSet<>();
-        for(int i=0; i<this.size(); i++) {
-            setOfRank.add(this.getCard(i).getRank());
-        }
-        setOfRank.forEach(currentRank -> {
-            CardList group = new CardList();
-            for(int i=0; i<this.size(); i++) {
-                if(this.getCard(i).getRank() == currentRank) {
-                    group.addCard(this.getCard(i));
-                }
-            }
-            returnArray.add(group);
-        });
-        return returnArray;
-    }
-
-    protected boolean containRank(int rank) {
-        boolean rankMatch = false;
-        for(int i=0; i<this.size(); i++) {
-            if (this.getCard(i).getRank() == rank) {
-                rankMatch = true;
-            }
-        }
-        return rankMatch;
-    }
-
-    protected boolean allHaveConsecutiveRank() {
-        boolean atLeast1Consecutive = false;
-        for(int i=0; i<this.size(); i++) {
-            int currentCardRank = this.getCard(i).getRank();
-            if (    this.containRank(currentCardRank+1) &&
-                    this.containRank(currentCardRank+2) &&
-                    this.containRank(currentCardRank+3) &&
-                    this.containRank(currentCardRank+4)
-            ) {
-                atLeast1Consecutive = true;
-            }
-        }
-        return atLeast1Consecutive;
-    }
-
-    protected boolean allHaveSameRank() {
-        boolean allIsSame = true;
-        int firstCardRank = this.getCard(0).getRank();
-        for(int i=0; i<this.size(); i++) {
-            int currentCardRank = this.getCard(i).getRank();
-            if(currentCardRank != firstCardRank) {
-                allIsSame = false;
-            }
-        }
-        return allIsSame;
-    }
-
-    protected boolean allHaveSameSuit() {
-        boolean allIsSame = true;
-        int firstCardSuit = this.getCard(0).getSuit();
-        for(int i=0; i<this.size(); i++) {
-            int currentCardSuit = this.getCard(i).getSuit();
-            if(currentCardSuit != firstCardSuit) {
-                allIsSame = false;
-            }
-        }
-        return allIsSame;
-    }
-
-    protected Card highestRank() {
-        Card highestCard = this.getCard(0);
-        for(int i=0; i<this.size(); i++) {
-            Card currentCard = this.getCard(i);
-            if(currentCard.getRank() > highestCard.getRank()) {
-                highestCard = currentCard;
-            }
-        }
-        return highestCard;
-    }
-
-    protected Card highestSuit() {
-        Card highestCard = this.getCard(0);
-        for(int i=0; i<this.size(); i++) {
-            Card currentCard = this.getCard(i);
-            if(currentCard.getSuit() > highestCard.getSuit()) {
-                highestCard = currentCard;
-            }
-        }
-        return highestCard;
-    }
-
 }

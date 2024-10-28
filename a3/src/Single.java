@@ -15,6 +15,6 @@ public class Single extends Hand {
 
     @Override
     public String getType() {
-        return "Single";
+        return Hand.SINGLE;
     }
 }

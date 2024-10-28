@@ -15,6 +15,6 @@ public class Triple extends Hand {
 
     @Override
     public String getType() {
-        return "Triple";
+        return Hand.TRIPLE;
     }
 }

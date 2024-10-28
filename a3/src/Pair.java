@@ -15,6 +15,6 @@ public class Pair extends Hand {
 
     @Override
     public String getType() {
-        return "Pair";
+        return Hand.PAIR;
     }
 }

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Quad extends Hand {
@@ -21,7 +22,32 @@ public class Quad extends Hand {
 
     @Override
     public boolean isValid() {
-        return false;
+        if(this.size() != 5) {
+            return false;
+        }
+
+        ArrayList<CardGroup> listOfGroups = this.groupCardsWithSameRank();
+        if(listOfGroups.size() != 2) {
+            return false;
+        }
+        CardGroup groupWith4Card = null;
+        CardGroup groupWith1Card = null;
+
+        for(CardGroup group : listOfGroups) {
+            if(group.size() == 4) {
+                groupWith4Card = group;
+            }
+            if(group.size() == 1) {
+                groupWith1Card = group;
+            }
+        }
+
+        if(groupWith4Card != null && groupWith1Card != null) {
+            topCard = groupWith4Card.highestRank();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

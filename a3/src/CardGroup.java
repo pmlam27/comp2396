@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
- * includes additional utilities for CardList
+ * wrapper around CardList that includes additional utilities
  */
 public class CardGroup extends CardList {
     protected ArrayList<CardGroup> groupCardsWithSameRank() {
@@ -22,34 +22,6 @@ public class CardGroup extends CardList {
         });
         return returnArray;
     }
-
-    /**
-     * check if cardA is greater than cardB
-     * compares rank first, then suit
-     * @param cardA
-     * @param cardB
-     * @return
-     */
-    protected boolean rankIsGreaterThan(Card cardA, Card cardB) {
-        if(cardA.getRank() > cardB.getRank()) {
-            return true;
-        } else if (cardA.getRank() == cardB.getRank()) {
-            return cardA.getSuit() > cardB.getSuit();
-        } else {
-            return false;
-        }
-    }
-
-    protected boolean suitIsGreaterThan(Card cardA, Card cardB) {
-        if(cardA.getSuit() > cardB.getSuit()) {
-            return true;
-        } else if (cardA.getSuit() == cardB.getSuit()) {
-            return cardA.getRank() > cardB.getRank();
-        } else {
-            return false;
-        }
-    }
-
 
     protected boolean containRank(int rank) {
         boolean rankMatch = false;

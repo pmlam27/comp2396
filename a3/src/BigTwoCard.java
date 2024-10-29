@@ -1,4 +1,5 @@
 public class BigTwoCard extends Card {
+
     public BigTwoCard(int suit, int rank) {
         super(suit, rank);
         // TODO: stuff
@@ -6,7 +7,6 @@ public class BigTwoCard extends Card {
 
     @Override
     public int compareTo(Card card) {
-        // TODO: stuff
-        return super.compareTo(card);
+        return CardOrder.bigTwoCompareWithRankFirst(this, card);
     }
 }

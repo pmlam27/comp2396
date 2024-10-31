@@ -16,7 +16,7 @@ public class Flush extends Hand {
         if(Objects.equals(hand.getType(), STRAIGHT)) {
             return true;
         } else if(Objects.equals(hand.getType(), FLUSH)) {
-            return suitIsGreaterThan(this.getTopCard(), hand.getTopCard());
+            return CardOrder.bigTwoCompareWithSuitFirst(this.getTopCard(), hand.getTopCard()) == 1;
         } else {
             return false;
         }

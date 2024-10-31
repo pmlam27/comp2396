@@ -8,7 +8,7 @@ public class Straight extends Hand {
     @Override
     public boolean beats(Hand hand) {
         if(Objects.equals(hand.getType(), Hand.STRAIGHT)) {
-            return rankIsGreaterThan(this.getTopCard(), hand.getTopCard());
+            return CardOrder.bigTwoCompareWithRankFirst(this.getTopCard(), hand.getTopCard()) == 1;
         } else {
             return false;
         }

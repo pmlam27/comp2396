@@ -39,7 +39,7 @@ public abstract class Hand extends CardGroup {
      */
     public boolean beats(Hand hand) {
         if(this.size() == hand.size()) {
-            return this.rankIsGreaterThan(this.getTopCard(), hand.getTopCard());
+            return CardOrder.bigTwoCompareWithRankFirst(this.getTopCard(), hand.getTopCard()) == 1;
         } else {
             return false;
         }

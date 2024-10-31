@@ -1,4 +1,10 @@
 public class CardOrder {
+    /**
+     *
+     * @param cardA first card
+     * @param cardB second card
+     * @return 1 if greater, 0 if same, -1 if lesser
+     */
     public static int bigTwoCompareWithRankFirst(Card cardA, Card cardB) {
         int ABigTwoRank = fromNormalToBigTwoOrder(cardA.getRank());
         int BBigTwoRank = fromNormalToBigTwoOrder(cardB.getRank());

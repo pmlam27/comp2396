@@ -13,7 +13,7 @@ public class FullHouse extends Hand {
         ) {
             return true;
         } else if (Objects.equals(hand.getType(), FULL_HOUSE)) {
-            return rankIsGreaterThan(this.getTopCard(), hand.getTopCard());
+            return CardOrder.bigTwoCompareWithRankFirst(this.getTopCard(), hand.getTopCard()) == 1;
         } else {
             return false;
         }

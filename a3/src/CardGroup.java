@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -23,29 +24,26 @@ public class CardGroup extends CardList {
         return returnArray;
     }
 
-    protected boolean containRank(int rank) {
-        boolean rankMatch = false;
-        for(int i=0; i<this.size(); i++) {
-            if (this.getCard(i).getRank() == rank) {
-                rankMatch = true;
-            }
-        }
-        return rankMatch;
-    }
-
     protected boolean allHaveConsecutiveRank() {
-        boolean atLeast1Consecutive = false;
-        for(int i=0; i<this.size(); i++) {
-            int currentCardRank = this.getCard(i).getRank();
-            if (    this.containRank(currentCardRank+1) &&
-                    this.containRank(currentCardRank+2) &&
-                    this.containRank(currentCardRank+3) &&
-                    this.containRank(currentCardRank+4)
-            ) {
-                atLeast1Consecutive = true;
-            }
+        ArrayList<CardGroup> cardGroups = this.groupCardsWithSameRank();
+        if(cardGroups.size() != 5) {
+            return false;
         }
-        return atLeast1Consecutive;
+
+        ArrayList<Integer> bigTwoRankOrderList = new ArrayList<>();
+        for(int i=0; i<5; i++) {
+            Card distinctCard = cardGroups.get(i).getCard(0);
+            bigTwoRankOrderList.add(CardOrder.fromNormalToBigTwoOrder(distinctCard.getRank()));
+        }
+
+
+        bigTwoRankOrderList.sort(null);
+
+        System.out.println(bigTwoRankOrderList);
+
+        int listRange = bigTwoRankOrderList.getLast() - bigTwoRankOrderList.getFirst();
+        System.out.println(listRange);
+        return listRange == 4;
     }
 
     protected boolean allHaveSameRank() {
@@ -76,7 +74,7 @@ public class CardGroup extends CardList {
         Card highestCard = this.getCard(0);
         for(int i=0; i<this.size(); i++) {
             Card currentCard = this.getCard(i);
-            if(currentCard.getRank() > highestCard.getRank()) {
+            if(CardOrder.bigTwoCompareWithRankFirst(currentCard, highestCard) == 1) {
                 highestCard = currentCard;
             }
         }
@@ -87,7 +85,7 @@ public class CardGroup extends CardList {
         Card highestCard = this.getCard(0);
         for(int i=0; i<this.size(); i++) {
             Card currentCard = this.getCard(i);
-            if(currentCard.getSuit() > highestCard.getSuit()) {
+            if(CardOrder.bigTwoCompareWithSuitFirst(currentCard, highestCard) == 1) {
                 highestCard = currentCard;
             }
         }

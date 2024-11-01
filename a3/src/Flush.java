@@ -24,7 +24,10 @@ public class Flush extends Hand {
 
     @Override
     public boolean isValid() {
-        if(this.size() == 5 && this.allHaveSameSuit()) {
+        if( this.size() == 5 &&
+            this.allHaveSameSuit() &&
+            !this.allHaveConsecutiveRank()
+        ) {
             this.topCard = this.highestRank();
             return true;
         } else {

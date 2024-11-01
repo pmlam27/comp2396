@@ -20,6 +20,25 @@ public class BigTwo implements CardGame {
         ui = new BigTwoUI(this);
     }
 
+    public static void main(String[] args) {
+
+    }
+
+    public static Hand composeHand(CardGamePlayer player, CardList cards) {
+        Hand[] possibleHands = {
+                new Single(player, cards), new Pair(player, cards), new Triple(player, cards),
+                new Straight(player,cards), new Flush(player, cards), new FullHouse(player, cards),
+                new Quad(player,cards), new StraightFlush(player, cards),
+        };
+
+        for (Hand possibleHand : possibleHands) {
+            if(possibleHand.isValid()) {
+                return possibleHand;
+            }
+        }
+        return null;
+    }
+
     @Override
     public int getNumOfPlayers() {
         return numOfPlayers;

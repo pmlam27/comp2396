@@ -11,17 +11,23 @@ public class BigTwo implements CardGame {
 
     public BigTwo() {
         numOfPlayers = 4;
-        ArrayList<CardGamePlayer> players = new ArrayList<CardGamePlayer>();
-        players.add(new CardGamePlayer());
-        players.add(new CardGamePlayer());
-        players.add(new CardGamePlayer());
-        players.add(new CardGamePlayer());
+        playerList = new ArrayList<>();
+        playerList.add(new CardGamePlayer());
+        playerList.add(new CardGamePlayer());
+        playerList.add(new CardGamePlayer());
+        playerList.add(new CardGamePlayer());
+
+        handsOnTable = new ArrayList<>();
 
         ui = new BigTwoUI(this);
     }
 
     public static void main(String[] args) {
-
+        BigTwo bigTwoGame = new BigTwo();
+        BigTwoDeck deck = new BigTwoDeck();
+        deck.initialize();
+        deck.shuffle();
+        bigTwoGame.start(deck);
     }
 
     public static Hand composeHand(CardGamePlayer player, CardList cards) {
@@ -78,7 +84,7 @@ public class BigTwo implements CardGame {
             CardGamePlayer currentPlayer = playerList.get(playerId);
             Card cardToAdd = deck.getCard(i);
 
-            if (cardToAdd.getRank() == 12 && cardToAdd.getSuit() == 3) {
+            if (cardToAdd.getRank() == 2 && cardToAdd.getSuit() == 0) {
                 playerIdWithThreeDiamond = playerId;
             }
             currentPlayer.addCard(deck.getCard(i));
@@ -93,12 +99,62 @@ public class BigTwo implements CardGame {
 
     @Override
     public void makeMove(int playerIdx, int[] cardIdx) {
-        // TODO: stuff
+        checkMove(playerIdx, cardIdx);
     }
 
     @Override
     public void checkMove(int playerIdx, int[] cardIdx) {
-        // TODO: stuff
+        CardGamePlayer currentPlayer = playerList.get(playerIdx);
+
+        if(cardIdx.length == 0) {
+            ui.printMsg("{Pass}");
+        }
+
+        CardList cardsHeld = currentPlayer.getCardsInHand();
+        CardList cardsToCompose = new CardList();
+        for(int cardId : cardIdx) {
+            boolean playerHaveSpecifiedCard = false;
+            for(int i=0; i<cardsHeld.size(); i++) {
+                Card currentCard = cardsHeld.getCard(i);
+                if(cardId == i) {
+                    playerHaveSpecifiedCard = true;
+                    cardsToCompose.addCard(currentCard);
+                }
+            }
+
+            if(!playerHaveSpecifiedCard) {
+                ui.printMsg("Not a legal move!!!\n");
+                ui.promptActivePlayer();
+                return;
+            }
+        }
+
+        Hand hand = composeHand(currentPlayer, cardsToCompose);
+        if (hand == null) {
+            ui.printMsg("Not a legal move!!!\n");
+            ui.promptActivePlayer();
+            return;
+        }
+
+        handsOnTable.add(hand);
+
+        currentPlayer.removeCards(hand);
+
+        StringBuilder msg = new StringBuilder("{" + hand.getType() + "}");
+        for(int i=0; i < hand.size(); i++) {
+            msg .append("[")
+                    .append(hand.getCard(i))
+                    .append("]");
+        }
+
+        ui.printMsg(msg.append("\n").toString());
+
+        if(!endOfGame()) {
+            ui.setActivePlayer((currentPlayerIdx + 1) % 4);
+            currentPlayerIdx = (currentPlayerIdx + 1) % 4;
+            ui.repaint();
+            ui.promptActivePlayer();
+        }
     }
 
     @Override

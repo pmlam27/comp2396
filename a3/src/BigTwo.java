@@ -223,11 +223,34 @@ public class BigTwo implements CardGame {
     @Override
     public void checkMove(int playerIdx, int[] cardIdx) {
         CardGamePlayer currentPlayer = playerList.get(playerIdx);
+        Hand lastHand;
+        if(handsOnTable.isEmpty()) {
+            lastHand = null;
+        } else {
+            lastHand = handsOnTable.get(handsOnTable.size() - 1);
+        }
+        boolean playerCanPass = true;
 
-        if(cardIdx.length == 0) {
-            ui.printMsg("{Pass}");
+        if(lastHand != null && lastHand.getPlayer() == currentPlayer) {
+            playerCanPass = false;
         }
 
+        if(cardIdx == null || cardIdx.length == 0) {
+            if(playerCanPass) {
+                ui.printMsg("{Pass}\n\n");
+                ui.setActivePlayer((currentPlayerIdx + 1) % 4);
+                currentPlayerIdx = (currentPlayerIdx + 1) % 4;
+                ui.repaint();
+                ui.promptActivePlayer();
+                return;
+            } else {
+                ui.printMsg("Not a legal move!!!\n");
+                ui.promptActivePlayer();
+                return;
+            }
+        }
+
+        // check if player actually have the cards
         CardList cardsHeld = currentPlayer.getCardsInHand();
         CardList cardsToCompose = new CardList();
         for(int cardId : cardIdx) {
@@ -247,8 +270,17 @@ public class BigTwo implements CardGame {
             }
         }
 
+        // check if the hand is a valid hand
         Hand hand = composeHand(currentPlayer, cardsToCompose);
         if (hand == null) {
+            ui.printMsg("Not a legal move!!!\n");
+            ui.promptActivePlayer();
+            return;
+        }
+
+        // check if the hand beats the last hand
+        // note: this is not checked if the player cannot pass or the last round was passed
+        if(playerCanPass && lastHand != null && !hand.beats(lastHand)){
             ui.printMsg("Not a legal move!!!\n");
             ui.promptActivePlayer();
             return;
@@ -265,13 +297,29 @@ public class BigTwo implements CardGame {
                     .append("]");
         }
 
-        ui.printMsg(msg.append("\n").toString());
+        ui.printMsg(msg.append("\n\n").toString());
 
         if(!endOfGame()) {
             ui.setActivePlayer((currentPlayerIdx + 1) % 4);
             currentPlayerIdx = (currentPlayerIdx + 1) % 4;
             ui.repaint();
             ui.promptActivePlayer();
+        } else {
+            ui.setActivePlayer(-1);
+            ui.repaint();
+            ui.printMsg("\nGame ends\n");
+            for(CardGamePlayer player : playerList) {
+                if(player.getCardsInHand().isEmpty()) {
+                    ui.printMsg(player.getName() + " wins the game.\n");
+                } else {
+                    ui.printMsg(
+                        player.getName() +
+                        " has " +
+                        player.getCardsInHand().size() +
+                        " cards in hand.\n"
+                    );
+                }
+            }
         }
     }
 

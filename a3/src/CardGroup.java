@@ -46,9 +46,7 @@ public class CardGroup extends CardList {
 
         bigTwoRankOrderList.sort(null);
 
-        System.out.println(bigTwoRankOrderList);
         int listRange = bigTwoRankOrderList.get(bigTwoRankOrderList.size()-1) - bigTwoRankOrderList.get(0);
-        System.out.println(listRange);
         return listRange == 4;
     }
 

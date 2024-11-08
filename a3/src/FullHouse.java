@@ -1,11 +1,24 @@
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * models the fullHouse hand type
+ */
 public class FullHouse extends Hand {
+    /**
+     * constructs fullHouse hand
+     * @param player the player
+     * @param cards the cards
+     */
     public FullHouse(CardGamePlayer player, CardList cards) {
         super(player, cards);
     }
 
+    /**
+     * check if this hand beats the given hand
+     * @param hand the hand to compare
+     * @return return whether it can be beaten
+     */
     @Override
     public boolean beats(Hand hand) {
         if( Objects.equals(hand.getType(), STRAIGHT) ||
@@ -13,12 +26,16 @@ public class FullHouse extends Hand {
         ) {
             return true;
         } else if (Objects.equals(hand.getType(), FULL_HOUSE)) {
-            return CardOrder.bigTwoCompareWithRankFirst(this.getTopCard(), hand.getTopCard()) == 1;
+            return BigTwo.compareWithRankFirst(this.getTopCard(), hand.getTopCard()) == 1;
         } else {
             return false;
         }
     }
 
+    /**
+     * check if the hand is valid
+     * @return whether the hand is valid
+     */
     @Override
     public boolean isValid() {
         if(this.size() != 5) {
@@ -49,6 +66,10 @@ public class FullHouse extends Hand {
         }
     }
 
+    /**
+     * get the string name of card
+     * @return the name of type
+     */
     @Override
     public String getType() {
         return Hand.FULL_HOUSE;

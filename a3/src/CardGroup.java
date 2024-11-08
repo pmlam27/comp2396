@@ -1,12 +1,16 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
- * wrapper around CardList that includes additional utilities
+ * this class inherits from cardList,
+ * and includes additional utilities that makes comparison easier
  */
 public class CardGroup extends CardList {
-    protected ArrayList<CardGroup> groupCardsWithSameRank() {
+    /**
+     * group together the cards with the same rank
+     * @return a list of CardGroups
+     */
+    public ArrayList<CardGroup> groupCardsWithSameRank() {
         ArrayList<CardGroup> returnArray = new ArrayList<CardGroup>();
         HashSet<Integer> setOfRank = new HashSet<>();
         for(int i=0; i<this.size(); i++) {
@@ -24,7 +28,11 @@ public class CardGroup extends CardList {
         return returnArray;
     }
 
-    protected boolean allHaveConsecutiveRank() {
+    /**
+     * check if all cards in the list have consecutive rank
+     * @return whether all cards are consecutive
+     */
+    public boolean allHaveConsecutiveRank() {
         ArrayList<CardGroup> cardGroups = this.groupCardsWithSameRank();
         if(cardGroups.size() != 5) {
             return false;
@@ -33,20 +41,22 @@ public class CardGroup extends CardList {
         ArrayList<Integer> bigTwoRankOrderList = new ArrayList<>();
         for(int i=0; i<5; i++) {
             Card distinctCard = cardGroups.get(i).getCard(0);
-            bigTwoRankOrderList.add(CardOrder.fromNormalToBigTwoOrder(distinctCard.getRank()));
+            bigTwoRankOrderList.add(BigTwo.fromNormalToBigTwoOrder(distinctCard.getRank()));
         }
-
 
         bigTwoRankOrderList.sort(null);
 
         System.out.println(bigTwoRankOrderList);
-
-        int listRange = bigTwoRankOrderList.getLast() - bigTwoRankOrderList.getFirst();
+        int listRange = bigTwoRankOrderList.get(bigTwoRankOrderList.size()-1) - bigTwoRankOrderList.get(0);
         System.out.println(listRange);
         return listRange == 4;
     }
 
-    protected boolean allHaveSameRank() {
+    /**
+     * check if all cards have the same rank.
+     * @return whether all cards have the same rank.
+     */
+    public boolean allHaveSameRank() {
         boolean allIsSame = true;
         int firstCardRank = this.getCard(0).getRank();
         for(int i=0; i<this.size(); i++) {
@@ -58,7 +68,11 @@ public class CardGroup extends CardList {
         return allIsSame;
     }
 
-    protected boolean allHaveSameSuit() {
+    /**
+     * check if all cards have the same suit.
+     * @return whether all cards have the same suit.
+     */
+    public boolean allHaveSameSuit() {
         boolean allIsSame = true;
         int firstCardSuit = this.getCard(0).getSuit();
         for(int i=0; i<this.size(); i++) {
@@ -70,22 +84,30 @@ public class CardGroup extends CardList {
         return allIsSame;
     }
 
-    protected Card highestRank() {
+    /**
+     * find the card with the highest rank
+     * @return the card with the highest rank
+     */
+    public Card highestRank() {
         Card highestCard = this.getCard(0);
         for(int i=0; i<this.size(); i++) {
             Card currentCard = this.getCard(i);
-            if(CardOrder.bigTwoCompareWithRankFirst(currentCard, highestCard) == 1) {
+            if(BigTwo.compareWithRankFirst(currentCard, highestCard) == 1) {
                 highestCard = currentCard;
             }
         }
         return highestCard;
     }
 
-    protected Card highestSuit() {
+    /**
+     * find the card with the highest suit
+     * @return the card with the highest suit
+     */
+    public Card highestSuit() {
         Card highestCard = this.getCard(0);
         for(int i=0; i<this.size(); i++) {
             Card currentCard = this.getCard(i);
-            if(CardOrder.bigTwoCompareWithSuitFirst(currentCard, highestCard) == 1) {
+            if(BigTwo.compareWithSuitFirst(currentCard, highestCard) == 1) {
                 highestCard = currentCard;
             }
         }

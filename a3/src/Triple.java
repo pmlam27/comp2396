@@ -1,8 +1,20 @@
+/**
+ * models the triple hand type
+ */
 public class Triple extends Hand {
+    /**
+     * constructs triple hand
+     * @param player the player
+     * @param cards the cards
+     */
     public Triple(CardGamePlayer player, CardList cards) {
         super(player, cards);
     }
 
+    /**
+     * check if the hand is valid
+     * @return whether the hand is valid
+     */
     @Override
     public boolean isValid() {
         if(this.size() == 3 && this.allHaveSameRank()) {
@@ -13,6 +25,10 @@ public class Triple extends Hand {
         }
     }
 
+    /**
+     * get the string name of card
+     * @return the name of type
+     */
     @Override
     public String getType() {
         return Hand.TRIPLE;

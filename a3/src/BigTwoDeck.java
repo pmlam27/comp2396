@@ -1,4 +1,10 @@
+/**
+ * models a deck in big two game
+ */
 public class BigTwoDeck extends Deck {
+    /**
+     * initialize a deck of big two card
+      */
     @Override
     public void initialize() {
         this.removeAllCards();

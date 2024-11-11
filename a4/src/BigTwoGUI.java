@@ -2,8 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import static java.awt.GridBagConstraints.BOTH;
-
 public class BigTwoGUI implements CardGameUI {
     static int frameWidth = 600;
     static int frameHeight = 600;
@@ -25,20 +23,23 @@ public class BigTwoGUI implements CardGameUI {
         BigTwoPanel() {
             setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
-            gbc.weightx = 1;
-            gbc.weighty = 1;
+            gbc.fill = GridBagConstraints.BOTH;
 
             JPanel leftPanel = new JPanel();
-            leftPanel.setBackground(Color.darkGray);
+            leftPanel.setBackground(Color.lightGray);
+            gbc.weightx = 1;
+            gbc.weighty = 1;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            add(leftPanel);
+            add(leftPanel, gbc);
 
             JPanel rightPanel = new JPanel();
-            rightPanel.setBackground(Color.lightGray);
+            rightPanel.setBackground(Color.white);
+            gbc.weightx = 2;
+            gbc.weighty = 1;
             gbc.gridx = 1;
             gbc.gridy = 0;
-            add(rightPanel);
+            add(rightPanel, gbc);
 
             setBackground(Color.white);
         }

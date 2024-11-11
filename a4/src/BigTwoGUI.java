@@ -1,15 +1,19 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class BigTwoGUI implements CardGameUI {
     static int frameWidth = 800;
     static int frameHeight = 800;
+    static ArrayList<JLabel> cardPictures;
     JFrame frame;
     static String userMessages = "";
-    BottomBar bottomBar = new BottomBar();
 
     public BigTwoGUI(BigTwo game) {
         BigTwoPanel bigTwoPanel = new BigTwoPanel();
@@ -54,6 +58,7 @@ public class BigTwoGUI implements CardGameUI {
             BottomRightPanel bottomRightPanel = new BottomRightPanel();
             add(bottomRightPanel, bottomRightPanel.getGbc());
 
+            BottomBar bottomBar = new BottomBar();
             add(bottomBar, bottomBar.getGbc());
         }
     }
@@ -115,7 +120,7 @@ public class BigTwoGUI implements CardGameUI {
         }
     }
 
-    public static class BottomRightPanel extends JPanel {
+    public class BottomRightPanel extends JPanel {
 
         static JTextArea messageArea = new JTextArea();
         public GridBagConstraints getGbc() {
@@ -155,7 +160,7 @@ public class BigTwoGUI implements CardGameUI {
         }
     }
 
-    public static class LeftPanel extends JPanel {
+    public class LeftPanel extends JPanel {
         public GridBagConstraints getGbc() {
             GridBagConstraints gbc = new GridBagConstraints();
             // gbc to be used by BigTwoPanel
@@ -178,28 +183,80 @@ public class BigTwoGUI implements CardGameUI {
             gbc.gridx = 0;
 
             PlayerPanel[] panelList = {
-                    new PlayerPanel(), new PlayerPanel(), new PlayerPanel(),
+                    new PlayerPanel(), new PlayerPanel(),
                     new PlayerPanel(), new PlayerPanel()
             };
 
-            for (int i=0; i<5; i++) {
+            for (int i=0; i<4; i++) {
                 gbc.gridy = i;
                 panelList[i].setBorder(BorderFactory.createLineBorder(Color.darkGray));
                 add(panelList[i], gbc);
             }
+
+            HandPanel handPanel = new HandPanel();
+            gbc.gridy = 4;
+            handPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
+            add(handPanel, gbc);
+
         }
     }
 
-    public static class PlayerPanel extends JPanel {
+    public class PlayerPanel extends JPanel {
         public PlayerPanel() {
             JButton button = new JButton();
-            button.setText("Hi");
+            button.setText("Player panel");
             add(button);
+
+
+        }
+    }
+
+    public class HandPanel extends JPanel {
+        public HandPanel() {
+//            JButton button = new JButton();
+//            button.setText("Hand panel");
+//            add(button);
+
+            CardList cardList = new CardList();
+            cardList.addCard(new BigTwoCard(0, 0));
+            ImageIcon cardIcon = getCardIcon(0, 0);
+            if (cardIcon != null) {
+                add(new JLabel(cardIcon));
+            }
+
+           //  LayeredCards cardComponent = new LayeredCards(cardList);
+        }
+    }
+
+    public class LayeredCards extends JLayeredPane {
+        public LayeredCards(CardList cardList) {
+
+        }
+    }
+
+    /**
+     *
+     * @param suit
+     * @param rank
+     * @return null if image is not found
+     */
+    ImageIcon getCardIcon(int suit, int rank) {
+        // order from low to high: Diamond, Clubs, Hearts, Spades
+        String[] suitName = {"d", "c", "h", "s"};
+        String[] rankName = {"a", "2", "3", "4", "5", "6", "7", "8", "9", "t", "j", "q", "k"};
+        String pathName = "images/cards/" + rankName[rank] + suitName[suit] + ".gif";
+
+        URL resource = this.getClass().getResource(pathName);
+        if (resource == null) {
+            return null;
         }
 
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
+        try {
+            BufferedImage cardImage = ImageIO.read(resource);
+            return new ImageIcon(cardImage);
+        } catch(java.io.IOException e) {
+            System.out.println("card not found");
+            return null;
         }
     }
 
@@ -232,12 +289,4 @@ public class BigTwoGUI implements CardGameUI {
 
     @Override
     public void promptActivePlayer() {}
-
-    public static class ButtonListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("button pressed");
-        }
-    }
 }

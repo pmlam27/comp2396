@@ -1,96 +1,78 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
+import static java.awt.GridBagConstraints.BOTH;
+
 public class BigTwoGUI implements CardGameUI {
+    static int frameWidth = 600;
+    static int frameHeight = 600;
     JFrame frame;
+    JPanel bigTwoPanel;
 
     public BigTwoGUI(BigTwo game) {
+        BigTwoPanel bigTwoPanel = new BigTwoPanel();
+
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(frameWidth, frameHeight);
 
-        JButton button = new JButton("click me");
-        ButtonListener buttonListener = new ButtonListener();
-        button.addActionListener(buttonListener);
-
-        frame.add(button);
-
-        frame.setSize(500, 500);
+        frame.add(bigTwoPanel);
         frame.setVisible(true);
+    }
+
+    public static class BigTwoPanel extends JPanel {
+        BigTwoPanel() {
+            setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.weightx = 1;
+            gbc.weighty = 1;
+
+            JPanel leftPanel = new JPanel();
+            leftPanel.setBackground(Color.darkGray);
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            add(leftPanel);
+
+            JPanel rightPanel = new JPanel();
+            rightPanel.setBackground(Color.lightGray);
+            gbc.gridx = 1;
+            gbc.gridy = 0;
+            add(rightPanel);
+
+            setBackground(Color.white);
+        }
     }
 
     public static void main(String[] args) {
         BigTwoGUI gui = new BigTwoGUI(null);
     }
 
-    /**
-     * Sets the index of the active player (i.e., the current player).
-     *
-     * @param activePlayer an int value representing the index of the active player
-     */
     @Override
     public void setActivePlayer(int activePlayer) {
 
     }
 
-    /**
-     * Repaints the user interface.
-     */
     @Override
-    public void repaint() {
+    public void repaint() {}
 
-    }
-
-    /**
-     * Prints the specified string to the message area of the card game user
-     * interface.
-     *
-     * @param msg the string to be printed to the message area of the card game user
-     *            interface
-     */
     @Override
-    public void printMsg(String msg) {
+    public void printMsg(String msg) {}
 
-    }
-
-    /**
-     * Clears the message area of the card game user interface.
-     */
     @Override
-    public void clearMsgArea() {
+    public void clearMsgArea() {}
 
-    }
-
-    /**
-     * Resets the card game user interface.
-     */
     @Override
-    public void reset() {
+    public void reset() {}
 
-    }
-
-    /**
-     * Enables user interactions.
-     */
     @Override
-    public void enable() {
+    public void enable() {}
 
-    }
-
-    /**
-     * Disables user interactions.
-     */
     @Override
-    public void disable() {
+    public void disable() {}
 
-    }
-
-    /**
-     * Prompts active player to select cards and make his/her move.
-     */
     @Override
-    public void promptActivePlayer() {
-
-    }
+    public void promptActivePlayer() {}
 
     public static class ButtonListener implements ActionListener {
 

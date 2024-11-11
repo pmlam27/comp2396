@@ -1,12 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class BigTwoGUI implements CardGameUI {
     static int frameWidth = 800;
     static int frameHeight = 800;
     JFrame frame;
-    JPanel bigTwoPanel;
+    static String userMessages = "";
+    BottomBar bottomBar = new BottomBar();
 
     public BigTwoGUI(BigTwo game) {
         BigTwoPanel bigTwoPanel = new BigTwoPanel();
@@ -20,7 +23,7 @@ public class BigTwoGUI implements CardGameUI {
         frame.setVisible(true);
     }
 
-    public static class BigTwoPanel extends JPanel {
+    public class BigTwoPanel extends JPanel {
         BigTwoPanel() {
             setLayout(new GridBagLayout());
 
@@ -31,7 +34,7 @@ public class BigTwoGUI implements CardGameUI {
             bottomBar (x=0-1, y=2)
             */
             LeftPanel leftPanel = new LeftPanel();
-            add(leftPanel, leftPanel.gbc);
+            add(leftPanel, leftPanel.getGbc());
 
             JPanel topRightPanel = new JPanel();
             topRightPanel.setBackground(Color.lightGray);
@@ -48,30 +51,16 @@ public class BigTwoGUI implements CardGameUI {
 
             add(topRightPanel, topRightPanelConfig);
 
-            JPanel bottomRightPanel = new JPanel();
-            bottomRightPanel.setBackground(Color.lightGray);
-            bottomRightPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
+            BottomRightPanel bottomRightPanel = new BottomRightPanel();
+            add(bottomRightPanel, bottomRightPanel.getGbc());
 
-            GridBagConstraints bottomRightPanelConfig = new GridBagConstraints();
-            bottomRightPanelConfig.fill = GridBagConstraints.BOTH;
-            bottomRightPanelConfig.gridx = 1;
-            bottomRightPanelConfig.gridy = 1;
-            bottomRightPanelConfig.gridheight = 1;
-            bottomRightPanelConfig.gridwidth = 1;
-            bottomRightPanelConfig.weightx = 3;
-            bottomRightPanelConfig.weighty = 8;
-
-            add(bottomRightPanel, bottomRightPanelConfig);
-
-            BottomBar bottomBar = new BottomBar();
-            add(bottomBar, bottomBar.gbc);
+            add(bottomBar, bottomBar.getGbc());
         }
     }
 
-    public static class BottomBar extends JPanel {
-        public GridBagConstraints gbc = new GridBagConstraints();
-
-        public BottomBar() {
+    public class BottomBar extends JPanel {
+        public GridBagConstraints getGbc() {
+            GridBagConstraints gbc = new GridBagConstraints();
             // gbc to be used by BigTwoPanel
             gbc.fill = GridBagConstraints.BOTH;
             gbc.gridx = 0;
@@ -80,32 +69,95 @@ public class BigTwoGUI implements CardGameUI {
             gbc.gridwidth = 2;
             gbc.weightx = 1;
             gbc.weighty = 1;
+            return gbc;
+        }
 
+        public BottomBar() {
+            setLayout(new GridBagLayout());
             setBorder(BorderFactory.createLineBorder(Color.darkGray));
+
+            GridBagConstraints subGbc = new GridBagConstraints();
+            // subGbc.fill = GridBagConstraints.BOTH;
+            subGbc.weightx = 1;
+            subGbc.weighty = 1;
 
             JButton playButton = new JButton();
             playButton.setText("Play");
+            subGbc.gridx = 0;
+            add(playButton, subGbc);
 
             JButton passButton = new JButton();
             passButton.setText("Pass");
+            subGbc.gridx = 1;
+            add(passButton, subGbc);
 
             JLabel messagePrompt = new JLabel();
             messagePrompt.setText("Message: ");
+            subGbc.gridx = 2;
+            subGbc.anchor = GridBagConstraints.LINE_END;
+            add(messagePrompt, subGbc);
 
             JTextField messageInput = new JTextField();
+            messageInput.setPreferredSize(new Dimension(150, 30));
+            subGbc.anchor = GridBagConstraints.CENTER;
+            subGbc.gridx = 3;
 
-            add(playButton);
-            add(passButton);
-            add(messagePrompt);
-            add(messageInput);
+            messageInput.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    userMessages += messageInput.getText() + "\n";
+                    messageInput.setText("");
+                    frame.repaint();
+                }
+            });
+
+            add(messageInput, subGbc);
+        }
+    }
+
+    public static class BottomRightPanel extends JPanel {
+
+        static JTextArea messageArea = new JTextArea();
+        public GridBagConstraints getGbc() {
+            GridBagConstraints gbc = new GridBagConstraints();
+            // gbc to be used by BigTwoPanel
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.gridx = 1;
+            gbc.gridy = 1;
+            gbc.gridheight = 1;
+            gbc.gridwidth = 1;
+            gbc.weightx = 3;
+            gbc.weighty = 8;
+            return gbc;
+        }
+
+        public BottomRightPanel() {
+            setBorder(BorderFactory.createLineBorder(Color.darkGray));
+            setLayout(new GridBagLayout());
+
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.weightx = 1;
+            gbc.weighty = 1;
+            messageArea.setText(userMessages);
+            messageArea.setEditable(false);
+            JScrollPane scrollPane = new JScrollPane(messageArea);
+            add(scrollPane, gbc);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (Objects.equals(messageArea.getText(), userMessages)) {
+                return;
+            }
+            messageArea.setText(userMessages);
         }
     }
 
     public static class LeftPanel extends JPanel {
-
-        public GridBagConstraints gbc = new GridBagConstraints();
-
-        public LeftPanel() {
+        public GridBagConstraints getGbc() {
+            GridBagConstraints gbc = new GridBagConstraints();
             // gbc to be used by BigTwoPanel
             gbc.fill = GridBagConstraints.BOTH;
             gbc.gridx = 0;
@@ -114,7 +166,10 @@ public class BigTwoGUI implements CardGameUI {
             gbc.gridwidth = 1;
             gbc.weightx = 4;
             gbc.weighty = 16;
+            return gbc;
+        }
 
+        public LeftPanel() {
             setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.fill = GridBagConstraints.BOTH;

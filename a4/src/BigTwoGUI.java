@@ -12,8 +12,15 @@ public class BigTwoGUI implements CardGameUI {
     static int frameWidth = 800;
     static int frameHeight = 800;
     static ArrayList<JLabel> cardPictures;
+    static CardList exampleList = new CardList();
     JFrame frame;
     static String userMessages = "";
+
+    static {
+        for(int i=0; i<12; i++) {
+            exampleList.addCard(new Card(0, i));
+        }
+    }
 
     public BigTwoGUI(BigTwo game) {
         BigTwoPanel bigTwoPanel = new BigTwoPanel();
@@ -42,7 +49,7 @@ public class BigTwoGUI implements CardGameUI {
 
             JPanel topRightPanel = new JPanel();
             topRightPanel.setBackground(Color.lightGray);
-            topRightPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
+            // topRightPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray));
 
             GridBagConstraints topRightPanelConfig = new GridBagConstraints();
             topRightPanelConfig.fill = GridBagConstraints.BOTH;
@@ -79,7 +86,7 @@ public class BigTwoGUI implements CardGameUI {
 
         public BottomBar() {
             setLayout(new GridBagLayout());
-            setBorder(BorderFactory.createLineBorder(Color.darkGray));
+            // setBorder(BorderFactory.createLineBorder(Color.darkGray));
 
             GridBagConstraints subGbc = new GridBagConstraints();
             // subGbc.fill = GridBagConstraints.BOTH;
@@ -206,31 +213,41 @@ public class BigTwoGUI implements CardGameUI {
             JButton button = new JButton();
             button.setText("Player panel");
             add(button);
-
-
         }
     }
 
     public class HandPanel extends JPanel {
         public HandPanel() {
-//            JButton button = new JButton();
-//            button.setText("Hand panel");
-//            add(button);
-
-            CardList cardList = new CardList();
-            cardList.addCard(new BigTwoCard(0, 0));
-            ImageIcon cardIcon = getCardIcon(0, 0);
-            if (cardIcon != null) {
-                add(new JLabel(cardIcon));
-            }
-
-           //  LayeredCards cardComponent = new LayeredCards(cardList);
+            setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.weightx = 1;
+            gbc.weighty = 1;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            LayeredCards cardImages = new LayeredCards(exampleList);
+            add(cardImages, gbc);
         }
     }
 
     public class LayeredCards extends JLayeredPane {
-        public LayeredCards(CardList cardList) {
+        CardList cardsToPaint;
 
+        public LayeredCards(CardList cardList) {
+            cardsToPaint = cardList;
+
+            for(int i=0; i<cardList.size(); i++) {
+                Image cardImage = getCardImage(cardList.getCard(i).getSuit(), cardList.getCard(i).getRank());
+                if (cardImage != null) {
+                    ImageIcon cardIcon = new ImageIcon(cardImage);
+                    JLabel cardLabel = new JLabel(cardIcon);
+                    cardLabel.setBounds(15*i, 0,
+                            cardIcon.getIconWidth(),
+                            cardIcon.getIconHeight());
+                    add(cardLabel, i);
+                    moveToFront(cardLabel);
+                }
+            }
         }
     }
 
@@ -240,7 +257,7 @@ public class BigTwoGUI implements CardGameUI {
      * @param rank
      * @return null if image is not found
      */
-    ImageIcon getCardIcon(int suit, int rank) {
+    Image getCardImage(int suit, int rank) {
         // order from low to high: Diamond, Clubs, Hearts, Spades
         String[] suitName = {"d", "c", "h", "s"};
         String[] rankName = {"a", "2", "3", "4", "5", "6", "7", "8", "9", "t", "j", "q", "k"};
@@ -248,12 +265,13 @@ public class BigTwoGUI implements CardGameUI {
 
         URL resource = this.getClass().getResource(pathName);
         if (resource == null) {
+            System.out.println("resource not found");
             return null;
         }
 
         try {
             BufferedImage cardImage = ImageIO.read(resource);
-            return new ImageIcon(cardImage);
+            return cardImage;
         } catch(java.io.IOException e) {
             System.out.println("card not found");
             return null;

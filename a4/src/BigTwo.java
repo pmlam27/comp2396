@@ -24,13 +24,7 @@ public class BigTwo implements CardGame {
         playerList.add(new CardGamePlayer());
 
         handsOnTable = new ArrayList<>();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
 
-        }
-        System.out.println("100");
-        System.out.println(this);
         ui = new BigTwoGUI(this);
     }
 

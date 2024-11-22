@@ -9,12 +9,14 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class BigTwoGUI implements CardGameUI {
-    static int frameWidth = 800;
-    static int frameHeight = 800;
-    static ArrayList<JLabel> cardPictures;
-    static CardList exampleList = new CardList();
-    JFrame frame;
-    static String userMessages = "";
+    private static int frameWidth = 800;
+    private static int frameHeight = 800;
+    private static ArrayList<JLabel> cardPictures;
+    private static CardList exampleList = new CardList();
+    private JFrame frame;
+    private static String userMessages = "";
+    private BigTwo game;
+    private ArrayList<CardGamePlayer> playerList; // the list of players
 
     static {
         for(int i=0; i<12; i++) {
@@ -24,6 +26,9 @@ public class BigTwoGUI implements CardGameUI {
 
     public BigTwoGUI(BigTwo game) {
         BigTwoPanel bigTwoPanel = new BigTwoPanel();
+        System.out.println(game);
+        this.game = game;
+        this.playerList = game.getPlayerList();
 
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,6 +37,8 @@ public class BigTwoGUI implements CardGameUI {
 
         frame.add(bigTwoPanel);
         frame.setVisible(true);
+
+        frame.repaint();
     }
 
     public class BigTwoPanel extends JPanel {
@@ -190,8 +197,8 @@ public class BigTwoGUI implements CardGameUI {
             gbc.gridx = 0;
 
             PlayerPanel[] panelList = {
-                    new PlayerPanel(), new PlayerPanel(),
-                    new PlayerPanel(), new PlayerPanel()
+                    new PlayerPanel(0), new PlayerPanel(1),
+                    new PlayerPanel(2), new PlayerPanel(3)
             };
 
             for (int i=0; i<4; i++) {
@@ -209,15 +216,40 @@ public class BigTwoGUI implements CardGameUI {
     }
 
     public class PlayerPanel extends JPanel {
-        public PlayerPanel() {
-            JButton button = new JButton();
-            button.setText("Player panel");
-            add(button);
+        private int playerId;
+        private CardList cardsInHand;
+        private boolean panelInitialized = false;
+
+        public PlayerPanel(int playerId) {
+            this.playerId = playerId;
+        }
+
+        @Override
+        public void repaint(Rectangle r) {
+            if(!panelInitialized) {
+                System.out.println("repainting");
+                cardsInHand = playerList.get(playerId).getCardsInHand();
+
+                setLayout(new GridBagLayout());
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.fill = GridBagConstraints.BOTH;
+                gbc.weightx = 1;
+                gbc.weighty = 1;
+                gbc.gridx = 0;
+                gbc.gridy = 0;
+                LayeredCards cardImages = new LayeredCards(cardsInHand);
+                add(cardImages, gbc);
+                panelInitialized = true;
+            } else {
+
+            }
+            super.repaint(r);
         }
     }
 
     public class HandPanel extends JPanel {
         public HandPanel() {
+            setPreferredSize(new Dimension(70, 70));
             setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.fill = GridBagConstraints.BOTH;
@@ -231,21 +263,47 @@ public class BigTwoGUI implements CardGameUI {
     }
 
     public class LayeredCards extends JLayeredPane {
+        CardList cardsSelected = new CardList();
         CardList cardsToPaint;
 
         public LayeredCards(CardList cardList) {
             cardsToPaint = cardList;
-
-            for(int i=0; i<cardList.size(); i++) {
-                Image cardImage = getCardImage(cardList.getCard(i).getSuit(), cardList.getCard(i).getRank());
+            for(int i=0; i<cardsToPaint.size(); i++) {
+                Card cardToPaint = cardsToPaint.getCard(i);
+                Image cardImage = getCardImage(cardToPaint.getSuit(), cardToPaint.getRank());
                 if (cardImage != null) {
                     ImageIcon cardIcon = new ImageIcon(cardImage);
-                    JLabel cardLabel = new JLabel(cardIcon);
-                    cardLabel.setBounds(15*i, 0,
+                    JButton cardButton = new JButton(cardIcon);
+                    cardButton.setBounds(15*i, 20,
                             cardIcon.getIconWidth(),
                             cardIcon.getIconHeight());
-                    add(cardLabel, i);
-                    moveToFront(cardLabel);
+                    cardButton.addActionListener(
+                        new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent actionEvent) {
+                                JButton buttonClicked = cardButton;
+                                Rectangle buttonBound = buttonClicked.getBounds();
+                                int rectangleX = (int) buttonBound.getLocation().getX();
+                                int rectangleY = (int) buttonBound.getLocation().getY();
+                                boolean cardAlreadySelected = false;
+                                for (int j=0; j<cardsSelected.size(); j++) {
+                                    if(cardsSelected.getCard(j) == cardToPaint) {
+                                        cardAlreadySelected = true;
+                                    }
+                                }
+                                if (cardAlreadySelected) {
+                                    cardButton.setLocation(rectangleX, rectangleY + 20);
+                                    cardsSelected.removeCard(cardToPaint);
+                                } else {
+                                    cardButton.setLocation(rectangleX, rectangleY - 20);
+                                    cardsSelected.addCard(cardToPaint);
+                                }
+                                frame.repaint();
+                            }
+                        }
+                    );
+                    add(cardButton, i);
+                    moveToFront(cardButton);
                 }
             }
         }
@@ -288,7 +346,9 @@ public class BigTwoGUI implements CardGameUI {
     }
 
     @Override
-    public void repaint() {}
+    public void repaint() {
+        frame.repaint();
+    }
 
     @Override
     public void printMsg(String msg) {}

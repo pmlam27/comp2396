@@ -10,7 +10,7 @@ public class BigTwo implements CardGame {
     private ArrayList<CardGamePlayer> playerList;
     private ArrayList<Hand> handsOnTable;
     private int currentPlayerIdx;
-    private BigTwoUI ui;
+    private BigTwoGUI ui;
 
     /**
      * this constructor creates the players and the UI object
@@ -24,8 +24,14 @@ public class BigTwo implements CardGame {
         playerList.add(new CardGamePlayer());
 
         handsOnTable = new ArrayList<>();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
 
-        ui = new BigTwoUI(this);
+        }
+        System.out.println("100");
+        System.out.println(this);
+        ui = new BigTwoGUI(this);
     }
 
     /**

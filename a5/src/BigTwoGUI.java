@@ -38,7 +38,12 @@ public class BigTwoGUI {
 
     private JPanel getBottomBar() {
         JPanel bottomBar = new JPanel();
-        bottomBar.add(new JLabel("end"));
+        bottomBar.setLayout(new GridLayout(1, 4));
+
+        bottomBar.add(new JButton("play"));
+        bottomBar.add(new JButton("pass"));
+        bottomBar.add(new JLabel("message"));
+        bottomBar.add(new JTextField(""));
 
         return bottomBar;
     }

@@ -29,19 +29,9 @@ public class BigTwoPlayerPanel extends JPanel {
         gbc.weighty = 1;
         gbc.gridx = 0;
         gbc.gridy = 1;
-        String avatar;
-        if (playerId == 0) {
-            avatar = "\uD83D\uDE00";
-        } else if (playerId == 1) {
-            avatar = "\uD83D\uDE05";
-        } else if (playerId == 2) {
-            avatar = "\uD83E\uDD11";
-        } else {
-            avatar = "\uD83E\uDD7A";
-        }
 
-        JLabel playerAvatar = new JLabel(avatar);
-        playerAvatar.setFont(new Font("Serif", Font.PLAIN, 40));
+        Image playerImage = BigTwoImageUtils.getPlayerAvatar(playerId).getScaledInstance(70, 70, Image.SCALE_DEFAULT);
+        JLabel playerAvatar = new JLabel(new ImageIcon(playerImage));
         add(playerAvatar, gbc);
 
         gbc = new GridBagConstraints();

@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.security.InvalidParameterException;
 
 public class BigTwoLayeredCards extends JLayeredPane {
     CardList cardsSelected = new CardList();
@@ -34,7 +35,7 @@ public class BigTwoLayeredCards extends JLayeredPane {
     public void setupHidden(int amount) {
         removeAll();
         for (int i=0; i<amount; i++) {
-            Image cardImage = getBlankCard();
+            Image cardImage = BigTwoImageUtils.getBlankCard();
             if (cardImage != null) {
                 ImageIcon cardIcon = new ImageIcon(cardImage);
                 JLabel cardLabel = new JLabel(cardIcon);
@@ -56,7 +57,7 @@ public class BigTwoLayeredCards extends JLayeredPane {
         cardsSelected = new CardList();
         for(int i=0; i<cardsToPaint.size(); i++) {
             Card cardToPaint = cardsToPaint.getCard(i);
-            Image cardImage = getCardImage(cardToPaint.getSuit(), cardToPaint.getRank());
+            Image cardImage = BigTwoImageUtils.getCardImage(cardToPaint.getSuit(), cardToPaint.getRank());
             if (cardImage != null) {
                 ImageIcon cardIcon = new ImageIcon(cardImage);
                 JButton cardButton = new JButton(cardIcon);
@@ -104,7 +105,7 @@ public class BigTwoLayeredCards extends JLayeredPane {
         cardsSelected = new CardList();
         for(int i=0; i<cardsToPaint.size(); i++) {
             Card cardToPaint = cardsToPaint.getCard(i);
-            Image cardImage = getCardImage(cardToPaint.getSuit(), cardToPaint.getRank());
+            Image cardImage = BigTwoImageUtils.getCardImage(cardToPaint.getSuit(), cardToPaint.getRank());
             if (cardImage != null) {
                 ImageIcon cardIcon = new ImageIcon(cardImage);
                 JLabel cardLabel = new JLabel(cardIcon);
@@ -117,52 +118,4 @@ public class BigTwoLayeredCards extends JLayeredPane {
         }
     }
 
-    /**
-     * get the image of a blank card
-     * @return image of a blank card
-     */
-    Image getBlankCard() {
-        String pathName = "images/cards/b.gif";
-
-        URL resource = this.getClass().getResource(pathName);
-        if (resource == null) {
-            System.out.println("resource not found");
-            return null;
-        }
-
-        try {
-            BufferedImage cardImage = ImageIO.read(resource);
-            return cardImage;
-        } catch(java.io.IOException e) {
-            System.out.println("card not found");
-            return null;
-        }
-    }
-
-    /**
-     * get the image of a card
-     * @param suit the suit of the card
-     * @param rank the rank of the card
-     * @return null if image is not found
-     */
-    Image getCardImage(int suit, int rank) {
-        // order from low to high: Diamond, Clubs, Hearts, Spades
-        String[] suitName = {"d", "c", "h", "s"};
-        String[] rankName = {"a", "2", "3", "4", "5", "6", "7", "8", "9", "t", "j", "q", "k"};
-        String pathName = "images/cards/" + rankName[rank] + suitName[suit] + ".gif";
-
-        URL resource = this.getClass().getResource(pathName);
-        if (resource == null) {
-            System.out.println("resource not found");
-            return null;
-        }
-
-        try {
-            BufferedImage cardImage = ImageIO.read(resource);
-            return cardImage;
-        } catch(java.io.IOException e) {
-            System.out.println("card not found");
-            return null;
-        }
-    }
 }

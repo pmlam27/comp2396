@@ -1,6 +1,11 @@
-import java.io.IOException;
+import jogamp.common.util.locks.SingletonInstanceServerSocket;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
 import java.net.*;
-import java.io.ObjectOutputStream;
+import java.util.Objects;
 
 public class BigTwoClient implements NetworkGame {
 
@@ -10,27 +15,40 @@ public class BigTwoClient implements NetworkGame {
     private ObjectOutputStream oos;
     private int playerID;
     private String playerName;
-    private String serverIP;
-    private int serverPort;
-    private BigTwoConnectGUI connectGUI;
+    private String serverIP = "127.0.0.1";
+    private int serverPort = 2396;
 
     public BigTwoClient(BigTwo game, BigTwoGUI gui) {
-        connectGUI = new BigTwoConnectGUI();
+        this.game = game;
+        this.gui = gui;
+        this.playerName = JOptionPane.showInputDialog("Please enter your player name:");
     }
 
-    public class ServerHandler implements Runnable {
+    public class ConnectButtonListener implements ActionListener {
         @Override
-        public void run() {
-            //
+        public void actionPerformed(ActionEvent actionEvent) {
+            connect();
         }
     }
 
-    public void promptUserToConnect() {
-//        try {
-//            Thread.sleep(10000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+    public class ServerHandler implements Runnable {
+        private ObjectInputStream stream;
+        public ServerHandler(ObjectInputStream stream) {
+            this.stream = stream;
+        }
+        @Override
+        public void run() {
+            GameMessage message;
+            try {
+                while ((message = (GameMessage) stream.readObject()) != null) {
+                    parseMessage(message);
+                }
+            } catch (IOException e){
+                gui.sendToGameLog("Error: IO exception occurred during read line");
+            } catch (ClassNotFoundException e) {
+                gui.sendToGameLog("Error: Class not found exception occurred during read line");
+            }
+        }
     }
 
     /**
@@ -39,11 +57,22 @@ public class BigTwoClient implements NetworkGame {
     @Override
     public void connect() {
         try {
-            sock = new Socket("127.0.0.1", 5000);
+            sock = new Socket(serverIP, serverPort);
+
+            oos = new ObjectOutputStream(sock.getOutputStream());
+            ObjectInputStream stream = new ObjectInputStream(sock.getInputStream());
+
+            gui.sendToGameLog("Success: client have connected to server at " + serverIP + " (port " + serverPort + ")");
+            gui.sendToGameLog("This window will close soon...");
+
+            ServerHandler handler = new ServerHandler(stream);
+            Thread receiveThread = new Thread(handler);
+            receiveThread.start();
+
         } catch (UnknownHostException e) {
-            connectGUI.sendToLog("Error: host is unknown");
+            gui.sendToGameLog("Error: host is unknown");
         } catch (IOException e) {
-            connectGUI.sendToLog("Error: exception occurred during IO");
+            gui.sendToGameLog("Error: exception occurred during IO");
         }
 
     }
@@ -55,6 +84,44 @@ public class BigTwoClient implements NetworkGame {
      */
     @Override
     public void parseMessage(GameMessage message) {
+        int messageType = message.getType();
+        int messagePlayerID = message.getPlayerID();
+
+        switch(messageType) {
+            case CardGameMessage.PLAYER_LIST:
+                gui.sendToGameLog("Received PLAYER_LIST");
+                gui.sendToGameLog("Player id is " + messagePlayerID);
+                playerID = messagePlayerID;
+                break;
+            case CardGameMessage.JOIN:
+                gui.sendToGameLog("Received JOIN");
+                break;
+            case CardGameMessage.FULL:
+                gui.sendToGameLog("Received FULL");
+                break;
+            case CardGameMessage.QUIT:
+                gui.sendToGameLog("Received QUIT");
+                break;
+            case CardGameMessage.READY:
+                gui.sendToGameLog("Received READY");
+                break;
+            case CardGameMessage.START:
+                gui.sendToGameLog("Received START");
+                break;
+            case CardGameMessage.MOVE:
+                gui.sendToGameLog("Received MOVE");
+                break;
+            case CardGameMessage.MSG:
+                gui.sendToGameLog("Received MSG");
+                break;
+        }
+    }
+
+    private void handlePlayerListMessage() {
+
+    }
+
+    private void handleJoinMessage() {
 
     }
 

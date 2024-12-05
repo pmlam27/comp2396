@@ -30,7 +30,6 @@ public class BigTwo implements CardGame {
         ui = new BigTwoGUI(this);
 
         client = new BigTwoClient(this, ui);
-        client.promptUserToConnect();
         // String userName = JOptionPane.showInputDialog("Please enter your name:");
         // TODO: block until connection is successful
     }

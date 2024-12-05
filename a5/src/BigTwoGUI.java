@@ -142,8 +142,8 @@ public class BigTwoGUI implements CardGameUI {
         return messageInput;
     }
 
-    private void sendToGameLog(String message) {
-        gameLog.addText(message);
+    public void sendToGameLog(String message) {
+        gameLog.addText(message + "\n");
         frame.repaint();
     }
 

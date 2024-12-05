@@ -2,16 +2,25 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-public class BigTwoGUI {
+public class BigTwoGUI implements CardGameUI {
     private static int frameWidth = 800;
     private static int frameHeight = 800;
     private JFrame frame;
-    private TextDisplay textDisplay = new TextDisplay();
+    private BigTwoTextDisplay gameLog = new BigTwoTextDisplay();
+    private BigTwoTextDisplay playerMessages = new BigTwoTextDisplay();
+    private ArrayList<BigTwoPlayerPanel> playerPanels = new ArrayList<BigTwoPlayerPanel>();
+    private BigTwoHandPanel handPanel;
 
-    public BigTwoGUI() {
+    private BigTwo game;
+    private int activePlayerId;
+
+    public BigTwoGUI(BigTwo game) {
+        this.game = game;
+
         frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(frameWidth, frameHeight);
         frame.setMinimumSize(new Dimension(300, 300));
 
@@ -25,25 +34,58 @@ public class BigTwoGUI {
         frame.repaint();
     }
 
-    public static void main(String[] args) {
-        BigTwoGUI gui = new BigTwoGUI();
-    }
-
-    private JPanel getTopBar() {
+    private JMenuBar getTopBar() {
         JPanel topBar = new JPanel();
-        topBar.add(new JLabel("top"));
 
-        return topBar;
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu menu = new JMenu("Game");
+        JMenuItem restartItem = new JMenuItem("Restart");
+        // TODO: restart logic
+        JMenuItem quitItem = new JMenuItem("Quit");
+        quitItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+            }
+        });
+        //
+
+        menu.add(restartItem);
+        menu.add(quitItem);
+
+        menuBar.add(menu);
+        return menuBar;
     }
 
     private JPanel getBottomBar() {
         JPanel bottomBar = new JPanel();
         bottomBar.setLayout(new GridLayout(1, 4));
 
-        bottomBar.add(new JButton("play"));
-        bottomBar.add(new JButton("pass"));
+        JButton playButton = new JButton("Play");
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int[] cardsSelected = playerPanels.get(activePlayerId).getCardsSelected();
+                if(cardsSelected.length != 0) {
+                    game.makeMove(activePlayerId, playerPanels.get(activePlayerId).getCardsSelected());
+                }
+            }
+        });
+
+        JButton passButton = new JButton("Pass");
+        passButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.makeMove(activePlayerId, new int[0]);
+            }
+        });
+
+        bottomBar.add(playButton);
+        bottomBar.add(passButton);
+
         bottomBar.add(new JLabel("message"));
-        bottomBar.add(new JTextField(""));
+        bottomBar.add(getMessageInputField());
 
         return bottomBar;
     }
@@ -54,7 +96,7 @@ public class BigTwoGUI {
         mainPanel.setLayout(new GridLayout(1, 2));
 
         mainPanel.add(getLeftPanel());
-        mainPanel.add(textDisplay);
+        mainPanel.add(getRightPanel());
 
         return mainPanel;
     }
@@ -63,30 +105,105 @@ public class BigTwoGUI {
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new GridLayout(5, 1));
 
-        leftPanel.add(new BigTwoPlayerPanel(0, frame));
-        leftPanel.add(new BigTwoPlayerPanel(1, frame));
-        leftPanel.add(new BigTwoPlayerPanel(2, frame));
-        leftPanel.add(new BigTwoPlayerPanel(3, frame));
-        leftPanel.add(new JLabel("Hello"));
+        playerPanels.add(new BigTwoPlayerPanel(0, frame));
+        playerPanels.add(new BigTwoPlayerPanel(1, frame));
+        playerPanels.add(new BigTwoPlayerPanel(2, frame));
+        playerPanels.add(new BigTwoPlayerPanel(3, frame));
+
+        for (BigTwoPlayerPanel panel : playerPanels) {
+            leftPanel.add(panel);
+        }
+
+        handPanel = new BigTwoHandPanel(frame);
+        leftPanel.add(handPanel);
 
         return leftPanel;
     }
 
+    private JPanel getRightPanel() {
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new GridLayout(2, 1));
 
-
-    private JButton getAddTextButton() {
-        JButton addTextButton = new JButton();
-        addTextButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        textDisplay.addText("hello\n");
-                        frame.repaint();
-                    }
-                }
-        );
-        return addTextButton;
+        rightPanel.add(new JScrollPane(gameLog));
+        rightPanel.add(new JScrollPane(playerMessages));
+        return rightPanel;
     }
 
+    private JTextField getMessageInputField() {
+        JTextField messageInput = new JTextField();
+        messageInput.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                playerMessages.addText(messageInput.getText() + "\n");
+                messageInput.setText("");
+                frame.repaint();
+            }
+        });
+        return messageInput;
+    }
 
+    private void sendToGameLog(String message) {
+        gameLog.addText(message);
+        frame.repaint();
+    }
+
+    private void refreshLeftPanel() {
+        for(int i=0; i<4; i++) {
+            CardList playerCards = game.getPlayerList().get(i).getCardsInHand();
+            playerPanels.get(i).setPlayerLabel(activePlayerId);
+            if(i == activePlayerId) {
+                playerPanels.get(i).setClickableCards(playerCards);
+            } else {
+                playerPanels.get(i).setHiddenCards(playerCards);
+            }
+        }
+    }
+
+    @Override
+    public void setActivePlayer(int activePlayer) {
+        activePlayerId = activePlayer;
+    }
+
+    @Override
+    public void repaint() {
+
+    }
+
+    @Override
+    public void printMsg(String msg) {
+        sendToGameLog(msg);
+    }
+
+    @Override
+    public void clearMsgArea() {
+
+    }
+
+    @Override
+    public void reset() {
+
+    }
+
+    @Override
+    public void enable() {
+
+    }
+
+    @Override
+    public void disable() {
+
+    }
+
+    @Override
+    public void promptActivePlayer() {
+        activePlayerId = game.getCurrentPlayerIdx();
+        sendToGameLog("Player " + activePlayerId + "'s turn:");
+        refreshLeftPanel();
+
+        ArrayList<Hand> hands = game.getHandsOnTable();
+        if(hands.size() > 0) {
+            Hand topHand = hands.get(hands.size()-1);
+            handPanel.updateLastPlayedHand(topHand);
+        }
+    }
 }

@@ -5,18 +5,24 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 
 public class BigTwoLayeredCards extends JLayeredPane {
     CardList cardsSelected = new CardList();
     CardList cardsToPaint;
+    ArrayList<Integer> cardsSelectedByOrder = new ArrayList<>();
     JFrame frame;
 
     /**
      * get the cards selected by players
      * @return cards selected by players
      */
-    public CardList getCardsSelected() {
-        return cardsSelected;
+    public int[] getCardsSelected() {
+        int[] intArray = new int[cardsSelectedByOrder.size()];
+        for(int i=0; i<cardsSelectedByOrder.size(); i++) {
+            intArray[i] = cardsSelectedByOrder.get(i);
+        }
+        return intArray;
     }
 
     /**
@@ -55,6 +61,8 @@ public class BigTwoLayeredCards extends JLayeredPane {
         removeAll();
         cardsToPaint = cards;
         cardsSelected = new CardList();
+        cardsSelectedByOrder = new ArrayList<>();
+
         for(int i=0; i<cardsToPaint.size(); i++) {
             Card cardToPaint = cardsToPaint.getCard(i);
             Image cardImage = BigTwoImageUtils.getCardImage(cardToPaint.getSuit(), cardToPaint.getRank());
@@ -64,6 +72,7 @@ public class BigTwoLayeredCards extends JLayeredPane {
                 cardButton.setBounds(15*i, 20,
                         cardIcon.getIconWidth(),
                         cardIcon.getIconHeight());
+                int finalI = i;
                 cardButton.addActionListener(
                         new ActionListener() {
                             @Override
@@ -80,9 +89,11 @@ public class BigTwoLayeredCards extends JLayeredPane {
                                 }
                                 if (cardAlreadySelected) {
                                     cardButton.setLocation(rectangleX, rectangleY + 20);
+                                    cardsSelectedByOrder.remove(Integer.valueOf(finalI));
                                     cardsSelected.removeCard(cardToPaint);
                                 } else {
                                     cardButton.setLocation(rectangleX, rectangleY - 20);
+                                    cardsSelectedByOrder.add(finalI);
                                     cardsSelected.addCard(cardToPaint);
                                 }
                                 frame.repaint();

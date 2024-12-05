@@ -10,7 +10,7 @@ public class BigTwo implements CardGame {
     private ArrayList<CardGamePlayer> playerList;
     private ArrayList<Hand> handsOnTable;
     private int currentPlayerIdx;
-    private BigTwoUI ui;
+    private BigTwoGUI ui;
 
     /**
      * this constructor creates the players and the UI object
@@ -25,7 +25,7 @@ public class BigTwo implements CardGame {
 
         handsOnTable = new ArrayList<>();
 
-        ui = new BigTwoUI(this);
+        ui = new BigTwoGUI(this);
     }
 
     /**

@@ -5,21 +5,39 @@ public class BigTwoPlayerPanel extends JPanel {
     private int playerId;
     private CardList cardsInHand;
     private BigTwoLayeredCards layeredCards;
-    private JLabel playerNameLabel;
-    private static CardList exampleList = new CardList();
+    private JLabel playerNameLabel = new JLabel("");
 
-    static {
-        for(int i=0; i<12; i++) {
-            exampleList.addCard(new Card(0, i));
+    private JFrame frame;
+
+    public int[] getCardsSelected() {
+        return layeredCards.getCardsSelected();
+    }
+
+    public void setPlayerLabel(int activePlayerId) {
+        if(playerId == activePlayerId) {
+            playerNameLabel.setText("You");
+        } else {
+            playerNameLabel.setText("Player " + playerId);
         }
     }
 
+    public void setClickableCards(CardList cards) {
+        layeredCards.setupClickable(cards);
+        frame.repaint();
+    }
+
+    public void setHiddenCards(CardList cards) {
+        layeredCards.setupHidden(cards.size());
+        frame.repaint();
+    }
 
     /**
      * constructs the player panel
      * @param playerId the id of player
      */
     public BigTwoPlayerPanel(int playerId, JFrame frame) {
+        this.frame = frame;
+
         this.playerId = playerId;
         setLayout(new GridBagLayout());
 
@@ -40,7 +58,6 @@ public class BigTwoPlayerPanel extends JPanel {
         gbc.weighty = 0.5;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        playerNameLabel = new JLabel("");
         add(playerNameLabel, gbc);
 
         gbc = new GridBagConstraints();
@@ -51,7 +68,6 @@ public class BigTwoPlayerPanel extends JPanel {
         gbc.gridx = 1;
         gbc.gridy = 0;
         layeredCards = new BigTwoLayeredCards(new CardList(), frame);
-        layeredCards.setupClickable(exampleList);
         add(layeredCards, gbc);
     }
 }

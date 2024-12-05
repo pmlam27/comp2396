@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.ArrayList;
 
 /**
@@ -11,6 +12,7 @@ public class BigTwo implements CardGame {
     private ArrayList<Hand> handsOnTable;
     private int currentPlayerIdx;
     private BigTwoGUI ui;
+    private BigTwoClient client;
 
     /**
      * this constructor creates the players and the UI object
@@ -26,6 +28,11 @@ public class BigTwo implements CardGame {
         handsOnTable = new ArrayList<>();
 
         ui = new BigTwoGUI(this);
+
+        client = new BigTwoClient(this, ui);
+        client.promptUserToConnect();
+        // String userName = JOptionPane.showInputDialog("Please enter your name:");
+        // TODO: block until connection is successful
     }
 
     /**
@@ -37,7 +44,7 @@ public class BigTwo implements CardGame {
         BigTwoDeck deck = new BigTwoDeck();
         deck.initialize();
         deck.shuffle();
-        bigTwoGame.start(deck);
+        // bigTwoGame.start(deck);
     }
 
     /**

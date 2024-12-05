@@ -22,6 +22,7 @@ public class BigTwoClient implements NetworkGame {
         this.game = game;
         this.gui = gui;
         this.playerName = JOptionPane.showInputDialog("Please enter your player name:");
+        connect();
     }
 
     public class ConnectButtonListener implements ActionListener {
@@ -63,7 +64,6 @@ public class BigTwoClient implements NetworkGame {
             ObjectInputStream stream = new ObjectInputStream(sock.getInputStream());
 
             gui.sendToGameLog("Success: client have connected to server at " + serverIP + " (port " + serverPort + ")");
-            gui.sendToGameLog("This window will close soon...");
 
             ServerHandler handler = new ServerHandler(stream);
             Thread receiveThread = new Thread(handler);
@@ -85,13 +85,10 @@ public class BigTwoClient implements NetworkGame {
     @Override
     public void parseMessage(GameMessage message) {
         int messageType = message.getType();
-        int messagePlayerID = message.getPlayerID();
 
         switch(messageType) {
             case CardGameMessage.PLAYER_LIST:
-                gui.sendToGameLog("Received PLAYER_LIST");
-                gui.sendToGameLog("Player id is " + messagePlayerID);
-                playerID = messagePlayerID;
+                handlePlayerListMessage(message);
                 break;
             case CardGameMessage.JOIN:
                 gui.sendToGameLog("Received JOIN");
@@ -117,11 +114,17 @@ public class BigTwoClient implements NetworkGame {
         }
     }
 
-    private void handlePlayerListMessage() {
+    private void handlePlayerListMessage(GameMessage message) {
+        gui.sendToGameLog("Received PLAYER_LIST");
+        gui.sendToGameLog("Player id is " + message.getPlayerID());
+        playerID = message.getPlayerID();
+    }
+
+    private void handleJoinMessage(GameMessage message) {
 
     }
 
-    private void handleJoinMessage() {
+    private void handleFullMessage(GameMessage message) {
 
     }
 

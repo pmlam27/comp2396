@@ -20,10 +20,10 @@ public class BigTwo implements CardGame {
     public BigTwo() {
         numOfPlayers = 4;
         playerList = new ArrayList<>();
-        playerList.add(new CardGamePlayer());
-        playerList.add(new CardGamePlayer());
-        playerList.add(new CardGamePlayer());
-        playerList.add(new CardGamePlayer());
+        playerList.add(new CardGamePlayer(null));
+        playerList.add(new CardGamePlayer(null));
+        playerList.add(new CardGamePlayer(null));
+        playerList.add(new CardGamePlayer(null));
 
         handsOnTable = new ArrayList<>();
 
@@ -150,6 +150,15 @@ public class BigTwo implements CardGame {
     @Override
     public Deck getDeck() {
         return deck;
+    }
+
+    public void updateNameOfPlayer(String name, int playerID) {
+        playerList.get(playerID).setName(name);
+//        for(int i=0; i<playerList.size(); i++) {
+//            CardGamePlayer player = playerList.get(i);
+//            player.setName(name);
+//        }
+        ui.repaint();
     }
 
     /**

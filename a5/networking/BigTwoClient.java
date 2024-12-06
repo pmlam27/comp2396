@@ -39,9 +39,9 @@ public class BigTwoClient implements NetworkGame {
         }
         @Override
         public void run() {
-            GameMessage message;
+            CardGameMessage message;
             try {
-                while ((message = (GameMessage) stream.readObject()) != null) {
+                while ((message = (CardGameMessage) stream.readObject()) != null) {
                     parseMessage(message);
                 }
             } catch (IOException e){
@@ -88,44 +88,96 @@ public class BigTwoClient implements NetworkGame {
 
         switch(messageType) {
             case CardGameMessage.PLAYER_LIST:
-                handlePlayerListMessage(message);
+                String[] playerNames = (String[]) message.getData();
+                handlePlayerListMessage(message.getPlayerID(), playerNames);
                 break;
             case CardGameMessage.JOIN:
-                gui.sendToGameLog("Received JOIN");
+                handleJoinMessage(message.getPlayerID(), (String) message.getData());
                 break;
             case CardGameMessage.FULL:
-                gui.sendToGameLog("Received FULL");
+                handleFullMessage();
                 break;
             case CardGameMessage.QUIT:
-                gui.sendToGameLog("Received QUIT");
-                break;
-            case CardGameMessage.READY:
-                gui.sendToGameLog("Received READY");
+                handleQuitMessage(message.getPlayerID(), (String) message.getData());
                 break;
             case CardGameMessage.START:
-                gui.sendToGameLog("Received START");
-                break;
-            case CardGameMessage.MOVE:
-                gui.sendToGameLog("Received MOVE");
+                handleStartMessage((Deck) message.getData());
                 break;
             case CardGameMessage.MSG:
-                gui.sendToGameLog("Received MSG");
-                break;
+                handleMsgMessage(message.getPlayerID(), (String) message.getData());
+            default:
+                gui.sendToGameLog("message received");
         }
     }
 
-    private void handlePlayerListMessage(GameMessage message) {
+    /**
+     *
+     * @param localPlayerID the playerID of the local player
+     * @param playerNames a reference to a regular array of strings specifying the names of the players
+     */
+    private void handlePlayerListMessage(int localPlayerID, String[] playerNames) {
         gui.sendToGameLog("Received PLAYER_LIST");
-        gui.sendToGameLog("Player id is " + message.getPlayerID());
-        playerID = message.getPlayerID();
+        gui.sendToGameLog("Player id is " + localPlayerID);
+        this.playerID = localPlayerID;
+        for(int i=0; i<playerNames.length; i++) {
+            if(playerNames[i] == null) {
+                gui.sendToGameLog("Player " + i + " is empty");
+            } else {
+                gui.sendToGameLog("adding " + playerNames[i]);
+                game.updateNameOfPlayer(playerNames[i], i);
+            }
+
+        }
+        sendJoinMessage();
     }
 
-    private void handleJoinMessage(GameMessage message) {
-
+    private void handleJoinMessage(int joinPlayerID, String joinPlayerName) {
+        gui.sendToGameLog("Received JOIN");
+        gui.sendToGameLog("adding " + joinPlayerName);
+        game.updateNameOfPlayer(joinPlayerName, joinPlayerID);
+        if(joinPlayerID == playerID) {
+            sendReadyMessage();
+        }
     }
 
-    private void handleFullMessage(GameMessage message) {
+    private void handleFullMessage() {
+        gui.sendToGameLog("Received FULL");
+    }
 
+    private void handleQuitMessage(int quitPlayerID, String playerInfo) {
+        gui.sendToGameLog("Received QUIT");
+    }
+
+    private void handleStartMessage(Deck providedDeck) {
+        gui.sendToGameLog("Received START");
+    }
+
+    private void handleMsgMessage(int senderPlayerID, String chatMessage) {
+        gui.sendToGameLog("Received MSG");
+    }
+
+    private void sendJoinMessage() {
+        gui.sendToGameLog("Sending JOIN");
+        CardGameMessage message = new CardGameMessage(CardGameMessage.JOIN, -1, playerName);
+        sendMessage(message);
+    }
+
+    private void sendReadyMessage() {
+        gui.sendToGameLog("Sending READY");
+        CardGameMessage message = new CardGameMessage(CardGameMessage.READY, -1, null);
+        sendMessage(message);
+    }
+
+    private void sendMoveMessage(int[] cardIndices) {
+        gui.sendToGameLog("Sending MOVE");
+        CardGameMessage message = new CardGameMessage(CardGameMessage.MOVE, playerID, cardIndices);
+        sendMessage(message);
+    }
+
+    private void sendMsgMessage(String chatMessage) {
+        gui.sendToGameLog("Sending MSG");
+        CardGameMessage message = new CardGameMessage(CardGameMessage.MSG, playerID, chatMessage);
+        sendMessage(message);
     }
 
     /**
@@ -135,7 +187,11 @@ public class BigTwoClient implements NetworkGame {
      */
     @Override
     public void sendMessage(GameMessage message) {
-
+        try {
+            oos.writeObject(message);
+        } catch (IOException e) {
+            gui.sendToGameLog("IO exception occurred during send message");
+        }
     }
 
     /**

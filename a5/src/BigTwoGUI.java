@@ -166,7 +166,7 @@ public class BigTwoGUI implements CardGameUI {
 
     @Override
     public void repaint() {
-
+        frame.repaint();
     }
 
     @Override

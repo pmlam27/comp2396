@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class BigTwoGUI implements CardGameUI {
     private static int frameWidth = 800;
@@ -10,6 +11,7 @@ public class BigTwoGUI implements CardGameUI {
     private JFrame frame;
     private BigTwoTextDisplay gameLog = new BigTwoTextDisplay();
     private BigTwoTextDisplay playerMessages = new BigTwoTextDisplay();
+    private ArrayList<ComponentPanel> leftComponentPanels = new ArrayList<>();
     private ArrayList<BigTwoPlayerPanel> playerPanels = new ArrayList<BigTwoPlayerPanel>();
     private BigTwoHandPanel handPanel;
 
@@ -95,7 +97,7 @@ public class BigTwoGUI implements CardGameUI {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayout(1, 2));
 
-        mainPanel.add(getLeftPanel());
+        mainPanel.add(new LeftPanel());
         mainPanel.add(getRightPanel());
 
         return mainPanel;
@@ -118,6 +120,70 @@ public class BigTwoGUI implements CardGameUI {
         leftPanel.add(handPanel);
 
         return leftPanel;
+    }
+    public class ComponentPanel extends JPanel {
+        public boolean haveAddedAlready = false;
+        public ComponentPanel() {
+            setLayout(new GridLayout(1, 1));
+            add(new JLabel("no player yet"));
+        }
+
+        public void addPlayerPanel(BigTwoPlayerPanel panel) {
+            removeAll();
+            sendToGameLog("hiiiiiii");
+            haveAddedAlready = true;
+            add(panel);
+
+        }
+
+        public void remove() {
+            haveAddedAlready = false;
+            removeAll();
+            add(new JLabel("no player yet"));
+        }
+    }
+    public class LeftPanel extends JPanel {
+        public LeftPanel() {
+            playerPanels.add(new BigTwoPlayerPanel(0, frame));
+            playerPanels.add(new BigTwoPlayerPanel(1, frame));
+            playerPanels.add(new BigTwoPlayerPanel(2, frame));
+            playerPanels.add(new BigTwoPlayerPanel(3, frame));
+
+            setLayout(new GridLayout(5, 1));
+
+            for(int i=0; i<4; i++) {
+                leftComponentPanels.add(new ComponentPanel());
+            }
+
+            for (JPanel panel : leftComponentPanels) {
+                add(panel);
+            }
+
+            handPanel = new BigTwoHandPanel(frame);
+            add(handPanel);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            for(int i=0; i<leftComponentPanels.size(); i++) {
+                ArrayList<CardGamePlayer> playerList = game.getPlayerList();
+                for(int j=0; j<playerList.size(); j++) {
+                    if(i == j) {
+                        CardGamePlayer player = playerList.get(j);
+                        if(player.getName() != null && !Objects.equals(player.getName(), "")) {
+                            if(!leftComponentPanels.get(i).haveAddedAlready) {
+                                leftComponentPanels.get(i).addPlayerPanel(new BigTwoPlayerPanel(i, frame));
+                            }
+
+                            // leftComponentPanels.get(i).add(new JLabel("test"));
+                            // leftComponentPanels.get(i).add(playerPanels.get(i));
+                        }
+                    }
+
+                }
+            }
+            super.paintComponent(g);
+        }
     }
 
     private JPanel getRightPanel() {

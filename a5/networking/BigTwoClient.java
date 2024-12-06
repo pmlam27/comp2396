@@ -100,6 +100,9 @@ public class BigTwoClient implements NetworkGame {
             case CardGameMessage.QUIT:
                 handleQuitMessage(message.getPlayerID(), (String) message.getData());
                 break;
+            case CardGameMessage.READY:
+                handleReadyMessage(message.getPlayerID());
+                break;
             case CardGameMessage.START:
                 handleStartMessage((Deck) message.getData());
                 break;
@@ -124,7 +127,7 @@ public class BigTwoClient implements NetworkGame {
                 gui.sendToGameLog("Player " + i + " is empty");
             } else {
                 gui.sendToGameLog("adding " + playerNames[i]);
-                game.updateNameOfPlayer(playerNames[i], i);
+                // game.updateNameOfPlayer(playerNames[i], i);
             }
 
         }
@@ -134,7 +137,8 @@ public class BigTwoClient implements NetworkGame {
     private void handleJoinMessage(int joinPlayerID, String joinPlayerName) {
         gui.sendToGameLog("Received JOIN");
         gui.sendToGameLog("adding " + joinPlayerName);
-        game.updateNameOfPlayer(joinPlayerName, joinPlayerID);
+        game.addPlayer(joinPlayerName, joinPlayerID);
+        //game.updateNameOfPlayer(joinPlayerName, joinPlayerID);
         if(joinPlayerID == playerID) {
             sendReadyMessage();
         }
@@ -146,6 +150,10 @@ public class BigTwoClient implements NetworkGame {
 
     private void handleQuitMessage(int quitPlayerID, String playerInfo) {
         gui.sendToGameLog("Received QUIT");
+    }
+
+    private void handleReadyMessage(int playerID) {
+        gui.sendToGameLog("The player '" + game.getPlayerList().get(playerID).getName() + "' is ready.");
     }
 
     private void handleStartMessage(Deck providedDeck) {
@@ -164,7 +172,7 @@ public class BigTwoClient implements NetworkGame {
 
     private void sendReadyMessage() {
         gui.sendToGameLog("Sending READY");
-        CardGameMessage message = new CardGameMessage(CardGameMessage.READY, -1, null);
+        CardGameMessage message = new CardGameMessage(CardGameMessage.READY, playerID, null);
         sendMessage(message);
     }
 

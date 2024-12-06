@@ -30,8 +30,6 @@ public class BigTwo implements CardGame {
         ui = new BigTwoGUI(this);
 
         client = new BigTwoClient(this, ui);
-        // String userName = JOptionPane.showInputDialog("Please enter your name:");
-        // TODO: block until connection is successful
     }
 
     /**
@@ -152,14 +150,27 @@ public class BigTwo implements CardGame {
         return deck;
     }
 
-    public void updateNameOfPlayer(String name, int playerID) {
+    public void addPlayer(String name, int playerID) {
         playerList.get(playerID).setName(name);
+        for(int i=0; i<playerList.size(); i++) {
+            CardGamePlayer player = playerList.get(i);
+            player.setName(name);
+        }
+        ui.repaint();
+    }
+
+    public void removePlayer(int playerID) {
+
+    }
+
+//    public void updateNameOfPlayer(String name, int playerID) {
+//        playerList.get(playerID).setName(name);
 //        for(int i=0; i<playerList.size(); i++) {
 //            CardGamePlayer player = playerList.get(i);
 //            player.setName(name);
 //        }
-        ui.repaint();
-    }
+//        ui.repaint();
+//    }
 
     /**
      * get the list of player
